@@ -3,7 +3,7 @@ const cors = require('cors');
 const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const fetch = require('node-fetch');
+// 删掉了 require('node-fetch')，直接用原生 fetch
 const { exec, execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
@@ -13,16 +13,14 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 
-// ========== 数据库连接 ==========
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }
 });
 
-// ========== Backblaze B2 配置 ==========
 const B2_BUCKET = process.env.B2_BUCKET || 'dcf-oj-data';
 
-// ========== 从 Backblaze B2 读取文件（直接用 HTTP） ==========
+// 直接用原生 fetch（Node.js 18+ 自带）
 async function readFromB2(key) {
     try {
         const url = `https://f000.backblazeb2.com/file/${B2_BUCKET}/${key}`;
@@ -34,7 +32,6 @@ async function readFromB2(key) {
     }
 }
 
-// ========== 从 B2 读取测试数据 ==========
 async function fetchTestData(problemCode, idx) {
     const input = await readFromB2(`${problemCode}/${idx}.in`);
     const output = await readFromB2(`${problemCode}/${idx}.out`);
@@ -42,7 +39,6 @@ async function fetchTestData(problemCode, idx) {
     return { input: input.trim(), output: output.trim() };
 }
 
-// ========== 真判题引擎 ==========
 async function runJudge(code, lang, problemCode, timeLimit = 1000) {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'judge-'));
     const results = [];
@@ -125,21 +121,17 @@ async function runJudge(code, lang, problemCode, timeLimit = 1000) {
     return { status: finalStatus, results, totalTime, maxMemory: 0 };
 }
 
-// ========== 初始化数据库 ==========
 async function initDB() {
     try {
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS users (
+        await pool.query(`CREATE TABLE IF NOT EXISTS users (
                 id VARCHAR(50) PRIMARY KEY,
                 username VARCHAR(50) UNIQUE NOT NULL,
                 password TEXT NOT NULL,
                 role VARCHAR(20) DEFAULT 'user',
                 solved TEXT[] DEFAULT '{}',
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-        `);
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS problems (
+            );`);
+        await pool.query(`CREATE TABLE IF NOT EXISTS problems (
                 code VARCHAR(20) PRIMARY KEY,
                 type VARCHAR(20) DEFAULT 'problem',
                 difficulty VARCHAR(20) DEFAULT 'unrated',
@@ -152,10 +144,8 @@ async function initDB() {
                 templates JSONB,
                 data_path VARCHAR(100),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-        `);
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS submissions (
+            );`);
+        await pool.query(`CREATE TABLE IF NOT EXISTS submissions (
                 id VARCHAR(50) PRIMARY KEY,
                 username VARCHAR(50),
                 user_id VARCHAR(50),
@@ -166,8 +156,7 @@ async function initDB() {
                 time INT,
                 memory INT,
                 timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-        `);
+            );`);
 
         const adminCheck = await pool.query("SELECT * FROM users WHERE username = 'Dan_Chao_Fan'");
         if (adminCheck.rows.length === 0) {
@@ -184,8 +173,6 @@ async function initDB() {
     }
 }
 initDB();
-
-// ========== API 路由 ==========
 
 app.get('/api/health', async (req, res) => {
     try {
@@ -401,7 +388,6 @@ app.get('/api/submissions', async (req, res) => {
     }
 });
 
-// ========== 启动服务 ==========
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`🚀 DCF OJ Backend 运行在端口 ${PORT}`);
