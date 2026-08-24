@@ -20,7 +20,6 @@
             --border: #334155;
             --team-color: #a78bfa;
             --user-color: #fb923c;
-            --security: #f472b6;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -30,7 +29,6 @@
             min-height: 100vh;
             line-height: 1.6;
         }
-        /* ===== 导航栏 ===== */
         .navbar {
             background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(10px);
@@ -56,12 +54,7 @@
             cursor: pointer;
         }
         .nav-brand::before { content: '⚡'; font-size: 1.8rem; }
-        .nav-links {
-            display: flex;
-            gap: 0.5rem;
-            list-style: none;
-            flex-wrap: wrap;
-        }
+        .nav-links { display: flex; gap: 0.5rem; list-style: none; flex-wrap: wrap; }
         .nav-links a {
             color: var(--text-secondary);
             text-decoration: none;
@@ -86,13 +79,7 @@
             font-family: 'Courier New', monospace;
             letter-spacing: 0.5px;
         }
-        .user-section {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-        /* ===== 按钮 ===== */
+        .user-section { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
         .btn {
             padding: 0.6rem 1.2rem;
             border: none;
@@ -105,27 +92,17 @@
             align-items: center;
             gap: 0.5rem;
         }
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent), var(--info));
-            color: white;
-        }
+        .btn-primary { background: linear-gradient(135deg, var(--accent), var(--info)); color: white; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(56, 189, 248, 0.4); }
-        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         .btn-secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
         .btn-secondary:hover { background: var(--bg-tertiary); }
         .btn-danger { background: linear-gradient(135deg, var(--danger), #ff7875); color: white; }
         .btn-success { background: linear-gradient(135deg, var(--success), #22c55e); color: white; }
         .btn-sm { padding: 0.3rem 0.8rem; font-size: 0.8rem; }
-        /* ===== 容器 ===== */
         .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
-        /* ===== 页面 ===== */
         .page { display: none; animation: fadeIn 0.3s ease; }
         .page.active { display: block; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        /* ===== 模态框 ===== */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .modal-overlay {
             display: none;
             position: fixed;
@@ -142,54 +119,44 @@
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             border-radius: 24px;
-            padding: 2.5rem;
-            max-width: 500px;
+            padding: 2rem;
+            max-width: 600px;
             width: 100%;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
             animation: modalIn 0.3s ease;
             max-height: 90vh;
             overflow-y: auto;
         }
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
+        .modal-wide { max-width: 700px; }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         .modal h2 { margin-bottom: 1.5rem; text-align: center; }
-        .modal .form-group { margin-bottom: 1.25rem; }
+        .modal .form-group { margin-bottom: 1rem; }
         .modal .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
         }
-        .modal .form-group input, .modal .form-group textarea {
+        .modal .form-group input, .modal .form-group textarea, .modal .form-group select {
             width: 100%;
-            padding: 0.75rem 1rem;
+            padding: 0.6rem 1rem;
             background: var(--bg);
             border: 1px solid var(--border);
-            border-radius: 10px;
+            border-radius: 8px;
             color: var(--text);
-            font-size: 1rem;
+            font-size: 0.95rem;
             outline: none;
             transition: border-color 0.3s;
             font-family: inherit;
         }
-        .modal .form-group input:focus, .modal .form-group textarea:focus {
+        .modal .form-group input:focus, .modal .form-group textarea:focus, .modal .form-group select:focus {
             border-color: var(--accent);
         }
-        .modal .form-hint {
-            text-align: center;
-            color: var(--text-secondary);
-            margin-top: 1rem;
-            font-size: 0.9rem;
-        }
-        .modal .form-hint a {
-            color: var(--accent);
-            cursor: pointer;
-            text-decoration: underline;
-        }
-        /* ===== Toast ===== */
+        .modal .form-group textarea { min-height: 80px; resize: vertical; }
+        .modal .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .modal .form-hint { font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem; }
+        .modal .modal-actions { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; }
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -212,17 +179,16 @@
         .toast-error { border-color: rgba(255,77,79,0.5); color: #ff7875; }
         .toast-success { border-color: rgba(82,196,26,0.5); color: #52c41a; }
         .toast-warning { border-color: rgba(250,173,20,0.5); color: #faad14; }
-        /* ===== 滚动条 ===== */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--bg-tertiary); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-        /* ===== 响应式 ===== */
         @media (max-width:768px) {
             .navbar { padding: 0.5rem 1rem; height: auto; gap: 0.5rem; }
             .nav-links a { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
             .container { padding: 1rem; }
             .modal { padding: 1.5rem; margin: 1rem; }
+            .modal .form-row { grid-template-columns: 1fr; }
         }
         /* ===== 首页 ===== */
         .hero {
@@ -233,31 +199,13 @@
             margin-bottom: 3rem;
             border: 1px solid rgba(56,189,248,0.2);
         }
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--accent), var(--info));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        .hero h1 { font-size: 3rem; margin-bottom: 1rem; background: linear-gradient(135deg, var(--accent), var(--info)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .hero p { color: var(--text-secondary); font-size: 1.2rem; max-width: 600px; margin: 0 auto 2rem; }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-        .stat-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 2rem;
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+        .stat-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 2rem; text-align: center; transition: transform 0.3s; }
+        .stat-card:hover { transform: translateY(-4px); }
         .stat-number { font-size: 2.5rem; font-weight: 800; color: var(--accent); display: block; }
-        .stat-label { color: var(--text-secondary); margin-top: 0.5rem; font-size: 0.95rem; }
+        .stat-label { color: var(--text-secondary); margin-top: 0.5rem; font-size: 0.9rem; }
         .notice-board {
             background: linear-gradient(135deg, rgba(251,191,36,0.1), rgba(251,191,36,0.05));
             border: 1px solid rgba(251,191,36,0.3);
@@ -266,63 +214,27 @@
             margin-bottom: 2rem;
         }
         .notice-title { color: var(--warning); font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
-        .footer {
-            text-align: center;
-            padding: 3rem 2rem;
-            color: var(--text-secondary);
-            border-top: 1px solid var(--border);
-            margin-top: 4rem;
-        }
+        .footer { text-align: center; padding: 2rem; color: var(--text-secondary); border-top: 1px solid var(--border); margin-top: 4rem; }
         /* ===== 题库 ===== */
-        .problem-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: var(--bg-secondary);
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-        }
-        .problem-table th, .problem-table td {
-            padding: 1rem 1.5rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-        .problem-table th {
-            background: rgba(56,189,248,0.1);
-            color: var(--accent);
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
-        }
+        .problem-table { width: 100%; border-collapse: collapse; background: var(--bg-secondary); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+        .problem-table th, .problem-table td { padding: 0.8rem 1.2rem; text-align: left; border-bottom: 1px solid var(--border); }
+        .problem-table th { background: rgba(56,189,248,0.08); color: var(--accent); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
         .problem-table tr:hover { background: rgba(56,189,248,0.05); cursor: pointer; }
         .problem-table tr:last-child td { border-bottom: none; }
-        .filters {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-        .filters input, .filters select {
-            padding: 0.75rem 1rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: var(--text);
-            outline: none;
-            font-size: 0.95rem;
-        }
-        .filters input { flex: 1; min-width: 200px; }
-        .filters select { min-width: 140px; cursor: pointer; }
-        /* ===== 难度颜色 ===== */
+        .problem-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.5rem; }
+        .filters { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .filters input, .filters select { padding: 0.6rem 1rem; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; color: var(--text); outline: none; font-size: 0.9rem; }
+        .filters input { flex: 1; min-width: 180px; }
+        .filters select { min-width: 120px; cursor: pointer; }
+        /* ===== 难度 ===== */
         .difficulty {
             display: inline-block;
-            padding: 0.25rem 0.75rem;
+            padding: 0.2rem 0.7rem;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 700;
             font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             border: 1px solid transparent;
         }
         .diff-unrated { background: rgba(156,163,175,0.15); color: #9ca3af; border-color: rgba(156,163,175,0.3); }
@@ -335,208 +247,77 @@
         .diff-provincial { background: rgba(167,139,250,0.15); color: #a78bfa; border-color: rgba(167,139,250,0.3); }
         .diff-noi { background: rgba(31,41,55,0.9); color: #e5e7eb; border-color: rgba(75,85,99,0.8); }
         .diff-noi-plus { background: rgba(244,114,182,0.15); color: #f472b6; border-color: rgba(244,114,182,0.3); }
-        /* ===== 类型标签 ===== */
         .type-badge {
             display: inline-flex;
             align-items: center;
-            padding: 0.2rem 0.6rem;
+            padding: 0.15rem 0.5rem;
             border-radius: 6px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 700;
             font-family: 'Courier New', monospace;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
         }
         .type-problem { background: rgba(56,189,248,0.2); color: var(--accent); }
         .type-team { background: rgba(167,139,250,0.2); color: var(--team-color); }
         .type-user { background: rgba(251,146,60,0.2); color: var(--user-color); }
-        .id-display { font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: 0.5px; }
+        .id-display { font-family: 'Courier New', monospace; font-weight: 700; letter-spacing: 0.3px; }
         .id-problem { color: var(--accent); }
         .id-team { color: var(--team-color); }
         .id-user { color: var(--user-color); }
-        .tag {
-            display: inline-block;
-            padding: 0.2rem 0.6rem;
-            background: rgba(56,189,248,0.15);
-            color: var(--accent);
-            border-radius: 6px;
-            font-size: 0.8rem;
-            margin-right: 0.5rem;
-            font-weight: 500;
-        }
+        .tag { display: inline-block; padding: 0.1rem 0.5rem; background: rgba(56,189,248,0.12); color: var(--accent); border-radius: 4px; font-size: 0.75rem; margin-right: 0.3rem; }
         .status-solved { color: var(--success); font-weight: 700; }
         .status-unsolved { color: var(--text-secondary); }
         /* ===== 题目详情 ===== */
-        .problem-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            height: calc(100vh - 180px);
-        }
-        .problem-panel {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 2rem;
-            overflow-y: auto;
-        }
-        .problem-header {
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        .problem-title {
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        .problem-meta {
-            display: flex;
-            gap: 1.5rem;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            flex-wrap: wrap;
-        }
-        .problem-meta span { display: flex; align-items: center; gap: 0.5rem; }
-        .problem-content h3 { color: var(--accent); margin: 1.5rem 0 0.75rem; font-size: 1.1rem; }
-        .problem-content p { margin-bottom: 1rem; line-height: 1.8; }
-        .sample-io {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin: 1rem 0;
-            font-family: 'Courier New', monospace;
-        }
-        .sample-io .label { color: var(--accent); font-weight: 700; margin-bottom: 0.5rem; display: block; font-size: 0.9rem; }
-        .sample-io pre { color: var(--text); white-space: pre-wrap; word-wrap: break-word; margin: 0; font-size: 0.95rem; line-height: 1.5; }
+        .problem-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; height: calc(100vh - 180px); }
+        .problem-panel { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; overflow-y: auto; }
+        .problem-header { border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.5rem; }
+        .problem-title { font-size: 1.5rem; margin-bottom: 0.3rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .problem-meta { display: flex; gap: 1.5rem; color: var(--text-secondary); font-size: 0.85rem; flex-wrap: wrap; }
+        .problem-meta span { display: flex; align-items: center; gap: 0.3rem; }
+        .problem-content h3 { color: var(--accent); margin: 1.2rem 0 0.5rem; font-size: 1rem; }
+        .problem-content p { margin-bottom: 0.8rem; line-height: 1.8; }
+        .sample-io { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin: 0.8rem 0; font-family: 'Courier New', monospace; }
+        .sample-io .label { color: var(--accent); font-weight: 700; margin-bottom: 0.3rem; display: block; font-size: 0.85rem; }
+        .sample-io pre { color: var(--text); white-space: pre-wrap; word-wrap: break-word; margin: 0; font-size: 0.9rem; line-height: 1.5; }
         /* ===== 编辑器 ===== */
-        .editor-panel {
-            display: flex;
-            flex-direction: column;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            overflow: hidden;
-        }
-        .editor-toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            background: var(--bg-tertiary);
-            border-bottom: 1px solid var(--border);
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-        .lang-select {
-            background: var(--bg);
-            color: var(--text);
-            border: 1px solid var(--border);
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            outline: none;
-        }
+        .editor-panel { display: flex; flex-direction: column; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+        .editor-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1.2rem; background: var(--bg-tertiary); border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 0.5rem; }
+        .lang-select { background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; outline: none; }
         .editor-wrapper { flex: 1; position: relative; display: flex; overflow: hidden; }
-        .line-numbers {
-            background: var(--bg-tertiary);
-            color: var(--text-secondary);
-            padding: 1rem 0.75rem;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            text-align: right;
-            user-select: none;
-            min-width: 50px;
-            border-right: 1px solid var(--border);
-            overflow: hidden;
-        }
-        .code-editor {
-            flex: 1;
-            background: var(--bg);
-            color: var(--text);
-            border: none;
-            padding: 1rem;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            resize: none;
-            outline: none;
-            tab-size: 4;
-        }
-        .editor-actions {
-            display: flex;
-            gap: 1rem;
-            padding: 1rem 1.5rem;
-            background: var(--bg-tertiary);
-            border-top: 1px solid var(--border);
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .cooldown-hint {
-            color: var(--warning);
-            font-size: 0.85rem;
-            display: none;
-            align-items: center;
-            gap: 0.5rem;
-        }
+        .line-numbers { background: var(--bg-tertiary); color: var(--text-secondary); padding: 0.8rem 0.5rem; font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.5; text-align: right; user-select: none; min-width: 40px; border-right: 1px solid var(--border); overflow: hidden; }
+        .code-editor { flex: 1; background: var(--bg); color: var(--text); border: none; padding: 0.8rem 1rem; font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.5; resize: none; outline: none; tab-size: 4; }
+        .editor-actions { display: flex; gap: 1rem; padding: 0.8rem 1.2rem; background: var(--bg-tertiary); border-top: 1px solid var(--border); align-items: center; flex-wrap: wrap; }
+        .cooldown-hint { color: var(--warning); font-size: 0.85rem; display: none; align-items: center; gap: 0.5rem; }
         .cooldown-hint.active { display: flex; }
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s linear infinite;
-        }
+        .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        /* ===== 评测方块 ===== */
-        .judge-modal .modal { max-width: 700px; padding: 2rem; }
+        /* ===== 评测 ===== */
+        .judge-modal .modal { max-width: 700px; }
         .judge-header { text-align: center; margin-bottom: 1.5rem; }
-        .judge-icon { font-size: 3rem; margin-bottom: 0.5rem; display: block; }
-        .judge-title { font-size: 1.5rem; margin-bottom: 0.5rem; }
-        .judge-status-final {
-            font-size: 1.1rem;
-            font-weight: 700;
-            padding: 0.4rem 1.2rem;
-            border-radius: 12px;
-            display: inline-block;
-            margin-top: 0.5rem;
-        }
-        .testcase-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 0.75rem;
-            margin-top: 1rem;
-            max-height: 400px;
-            overflow-y: auto;
-            padding-right: 0.5rem;
-        }
+        .judge-icon { font-size: 3rem; margin-bottom: 0.3rem; display: block; }
+        .judge-title { font-size: 1.3rem; margin-bottom: 0.3rem; }
+        .judge-status-final { font-size: 1rem; font-weight: 700; padding: 0.3rem 1rem; border-radius: 8px; display: inline-block; margin-top: 0.3rem; }
+        .testcase-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 0.5rem; margin-top: 1rem; max-height: 350px; overflow-y: auto; }
         .testcase-block {
             aspect-ratio: 1;
-            border-radius: 12px;
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 0.25rem;
+            gap: 0.2rem;
             font-family: 'Courier New', monospace;
             position: relative;
             overflow: hidden;
             border: 2px solid transparent;
             transition: all 0.3s;
             cursor: default;
-            min-height: 90px;
+            min-height: 80px;
         }
         .testcase-block:hover { transform: translateY(-2px); }
-        .tc-status { font-size: 1.3rem; font-weight: 800; letter-spacing: 1px; }
-        .tc-info { font-size: 0.65rem; opacity: 0.9; text-align: center; line-height: 1.3; }
-        .tc-num { position: absolute; top: 4px; left: 6px; font-size: 0.6rem; opacity: 0.7; font-weight: 700; }
+        .tc-status { font-size: 1.2rem; font-weight: 800; }
+        .tc-info { font-size: 0.6rem; opacity: 0.9; text-align: center; line-height: 1.3; }
+        .tc-num { position: absolute; top: 3px; left: 5px; font-size: 0.55rem; opacity: 0.6; }
         .tc-AC { background: #52c41a; color: white; }
         .tc-WA { background: #ff4d4f; color: white; }
         .tc-TLE { background: #1f1f1f; color: white; border-color: #434343; }
@@ -544,182 +325,47 @@
         .tc-MLE { background: #1f1f1f; color: white; border-color: #434343; }
         .tc-OLE { background: #1f1f1f; color: white; border-color: #434343; }
         .tc-UKE { background: #2f54eb; color: white; }
-        .tc-FE { background: #faad14; color: #1f1f1f; }
-        .tc-IE { background: #ff4d4f; color: white; }
-        .tc-PE { background: #faad14; color: #1f1f1f; }
         .tc-CE { background: #faad14; color: #1f1f1f; }
-        .tc-PC { background: #fb923c; color: white; }
-        .tc-SE { background: #eb2f96; color: white; }
-        .tc-NTD { background: #8c8c8c; color: white; }
-        .tc-JF { background: #ff4d4f; color: white; }
-        .tc-US { background: #8c8c8c; color: white; }
-        .tc-PD { background: #8c8c8c; color: white; }
-        .tc-SJE { background: #722ed1; color: white; }
-        .tc-OE { background: #faad14; color: #1f1f1f; }
-        .tc-CI { background: #1890ff; color: white; }
-        .tc-OCP { background: #ff4d4f; color: white; }
         .tc-Judging { background: linear-gradient(135deg, #1890ff, #36cfc9); color: white; animation: judgingPulse 1.5s infinite; }
         .tc-Waiting { background: #8c8c8c; color: white; opacity: 0.6; }
-        @keyframes judgingPulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(0.97); }
-        }
-        .progress-bar { width: 100%; height: 6px; background: var(--bg-tertiary); border-radius: 3px; overflow: hidden; margin: 1rem 0; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--info)); border-radius: 3px; transition: width 0.3s ease; width: 0%; }
+        @keyframes judgingPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(0.97); } }
+        .progress-bar { width: 100%; height: 4px; background: var(--bg-tertiary); border-radius: 2px; overflow: hidden; margin: 0.8rem 0; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--info)); border-radius: 2px; transition: width 0.3s; width: 0%; }
         /* ===== 提交记录 ===== */
-        .submission-filters { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-        .filter-btn {
-            padding: 0.5rem 1rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.9rem;
-        }
+        .submission-filters { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .filter-btn { padding: 0.4rem 0.8rem; background: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-secondary); border-radius: 6px; cursor: pointer; transition: all 0.3s; font-size: 0.85rem; }
         .filter-btn:hover, .filter-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
-        .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text-secondary); }
-        .empty-state-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.5; }
-        /* ===== 验证码 ===== */
-        .captcha-box { display: flex; gap: 1rem; align-items: center; margin-top: 0.5rem; flex-wrap: wrap; }
-        .captcha-question {
-            background: var(--bg-tertiary);
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            font-weight: 700;
-            color: var(--accent);
-            font-family: 'Courier New', monospace;
-            letter-spacing: 1px;
-            user-select: none;
-        }
-        /* ===== 个人主页 ===== */
-        .profile-header {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-            padding: 2rem;
-            background: var(--bg-secondary);
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-        .profile-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent), var(--info));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            font-weight: 700;
-            color: white;
-            flex-shrink: 0;
-        }
-        .profile-info h2 { font-size: 1.8rem; }
+        .empty-state { text-align: center; padding: 3rem; color: var(--text-secondary); }
+        .empty-state-icon { font-size: 3rem; margin-bottom: 0.5rem; opacity: 0.5; }
+        /* ===== 其他 ===== */
+        .captcha-box { display: flex; gap: 1rem; align-items: center; margin-top: 0.3rem; flex-wrap: wrap; }
+        .captcha-question { background: var(--bg-tertiary); padding: 0.5rem 1rem; border-radius: 6px; font-weight: 700; color: var(--accent); font-family: 'Courier New', monospace; user-select: none; }
+        .profile-header { display: flex; gap: 2rem; align-items: center; padding: 1.5rem; background: var(--bg-secondary); border-radius: 16px; border: 1px solid var(--border); margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--info)); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 700; color: white; flex-shrink: 0; }
+        .profile-info h2 { font-size: 1.5rem; }
         .profile-info p { color: var(--text-secondary); }
-        .profile-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        /* ===== 私信 ===== */
-        .messages-layout {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 1.5rem;
-            height: 500px;
-        }
-        .conversation-list {
-            background: var(--bg-secondary);
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            overflow-y: auto;
-            padding: 1rem;
-        }
-        .conversation-item {
-            padding: 0.75rem 1rem;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 0.5rem;
-        }
-        .conversation-item:hover { background: var(--bg-tertiary); }
-        .conversation-item.active { background: var(--bg-tertiary); border-left: 3px solid var(--accent); }
-        .conversation-item .name { font-weight: 600; }
-        .conversation-item .last-msg { font-size: 0.85rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .chat-window {
-            background: var(--bg-secondary);
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        .chat-messages { flex: 1; padding: 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; }
-        .chat-msg { max-width: 70%; padding: 0.75rem 1rem; border-radius: 12px; word-wrap: break-word; }
-        .chat-msg.sent { background: var(--accent); color: white; align-self: flex-end; }
-        .chat-msg.received { background: var(--bg-tertiary); align-self: flex-start; }
-        .chat-input-area { display: flex; gap: 1rem; padding: 1rem; border-top: 1px solid var(--border); }
-        .chat-input-area input { flex: 1; padding: 0.75rem 1rem; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; color: var(--text); outline: none; }
-        /* ===== 通知 ===== */
-        .notification-item {
-            padding: 1rem 1.5rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            margin-bottom: 0.75rem;
-            transition: all 0.3s;
-        }
-        .notification-item:hover { border-color: var(--accent); }
-        .notification-item .time { font-size: 0.8rem; color: var(--text-secondary); }
-        /* ===== 团队 ===== */
-        .team-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-        .team-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 1.5rem;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        .team-card:hover { transform: translateY(-5px); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); border-color: var(--accent); }
-        .team-card h3 { color: var(--team-color); }
-        .team-card .member-count { color: var(--text-secondary); font-size: 0.9rem; }
-        .diff-legend { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; }
-        .diff-legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-secondary); }
-        .diff-legend-dot { width: 14px; height: 14px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); }
-        /* ===== 用户管理 ===== */
-        .admin-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .profile-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .diff-legend { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.8rem; }
+        .diff-legend-item { display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem; color: var(--text-secondary); }
+        .diff-legend-dot { width: 12px; height: 12px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.1); }
         @media (max-width:1024px) {
             .problem-layout { grid-template-columns: 1fr; height: auto; }
-            .editor-panel { min-height: 400px; }
-            .messages-layout { grid-template-columns: 1fr; height: auto; }
-            .conversation-list { max-height: 200px; }
-            .chat-window { min-height: 300px; }
-            .testcase-grid { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
+            .editor-panel { min-height: 350px; }
+            .testcase-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); }
         }
         @media (max-width:768px) {
             .problem-title { font-size: 1.2rem; }
             .hero h1 { font-size: 2rem; }
             .hero { padding: 2rem 1rem; }
-            .profile-header { flex-direction: column; text-align: center; }
-            .testcase-grid { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); }
-            .testcase-block { min-height: 70px; }
+            .testcase-grid { grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); }
+            .testcase-block { min-height: 60px; }
             .tc-status { font-size: 1rem; }
         }
+        .admin-actions { display: flex; gap: 0.3rem; flex-wrap: wrap; }
     </style>
 </head>
 <body>
 
-<!-- ===== 导航栏 ===== -->
 <nav class="navbar">
     <a class="nav-brand" onclick="navigate('home')">Dan_Chao_Fan OJ</a>
     <ul class="nav-links">
@@ -735,65 +381,54 @@
     <div class="user-section">
         <span class="version-badge">v1.0.0</span>
         <div id="auth-buttons">
-            <button class="btn btn-secondary" onclick="showAuthModal('login')" style="padding:0.4rem 0.8rem;font-size:0.8rem;">登录</button>
-            <button class="btn btn-primary" onclick="showAuthModal('register')" style="padding:0.4rem 0.8rem;font-size:0.8rem;">注册</button>
+            <button class="btn btn-secondary" onclick="showAuthModal('login')" style="padding:0.3rem 0.8rem;font-size:0.8rem;">登录</button>
+            <button class="btn btn-primary" onclick="showAuthModal('register')" style="padding:0.3rem 0.8rem;font-size:0.8rem;">注册</button>
         </div>
         <div id="user-info" style="display:none;align-items:center;gap:0.5rem;flex-wrap:wrap;">
             <span style="color:var(--text-secondary);font-size:0.9rem;cursor:pointer;" onclick="navigate('profile')">👤 <span id="username-display"></span></span>
-            <button class="btn btn-secondary" onclick="logout()" style="padding:0.3rem 0.6rem;font-size:0.75rem;">退出</button>
+            <button class="btn btn-secondary" onclick="logout()" style="padding:0.2rem 0.6rem;font-size:0.75rem;">退出</button>
         </div>
     </div>
 </nav>
 
-<!-- ===== 主容器 ===== -->
 <div class="container" id="app"></div>
 
-<!-- ===== 底部 ===== -->
 <footer class="footer">
-    <p>Dan_Chao_Fan OJ <span class="version-badge">v1.0.0</span> | http://localhost:3000</p>
-    <p style="margin-top:0.5rem;font-size:0.85rem;">自主判题 · 洛谷同款难度颜色 · 21种评测状态</p>
+    <p>Dan_Chao_Fan OJ <span class="version-badge">v1.0.0</span> | DCF OJ</p>
 </footer>
 
 <!-- ===== 登录模态框 ===== -->
 <div class="modal-overlay" id="auth-modal">
     <div class="modal">
         <h2 id="auth-title">登录</h2>
-        <div class="form-group">
-            <label>用户名</label>
-            <input type="text" id="auth-username" placeholder="请输入用户名" maxlength="20" />
-        </div>
-        <div class="form-group">
-            <label>密码</label>
-            <input type="password" id="auth-password" placeholder="请输入密码" maxlength="30" />
-        </div>
+        <div class="form-group"><label>用户名</label><input type="text" id="auth-username" placeholder="请输入用户名" /></div>
+        <div class="form-group"><label>密码</label><input type="password" id="auth-password" placeholder="请输入密码" /></div>
         <div class="form-group" id="captcha-group" style="display:none;">
-            <label>安全验证</label>
+            <label>验证码</label>
             <div class="captcha-box">
                 <div class="captcha-question" id="captcha-display">3 + 5 = ?</div>
-                <input type="text" id="captcha-input" placeholder="答案" style="flex:1;padding:0.75rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);outline:none;" />
+                <input type="text" id="captcha-input" placeholder="答案" style="flex:1;padding:0.5rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);outline:none;" />
             </div>
         </div>
         <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:0.5rem;" onclick="handleAuth()" id="auth-btn">登录</button>
-        <div class="form-hint" id="auth-hint">
-            还没有账号？<a onclick="switchAuthMode('register')">立即注册</a>
-        </div>
+        <div class="form-hint" id="auth-hint">还没有账号？<a onclick="switchAuthMode('register')">立即注册</a></div>
     </div>
 </div>
 
-<!-- ===== 提交验证码模态框 ===== -->
+<!-- ===== 提交验证码 ===== -->
 <div class="modal-overlay" id="captcha-modal">
     <div class="modal" style="max-width:400px;">
-        <h2>🛡️ 安全验证</h2>
-        <p style="color:var(--text-secondary);margin-bottom:1.5rem;text-align:center;">为防止自动化攻击，请完成验证</p>
+        <h2>🛡️ 验证</h2>
+        <p style="color:var(--text-secondary);margin-bottom:1rem;text-align:center;">请完成验证</p>
         <div class="form-group">
-            <div class="captcha-box" style="justify-content:center;margin-bottom:1rem;">
-                <div class="captcha-question" id="submit-captcha-display" style="font-size:1.2rem;padding:1rem 1.5rem;">12 + 7 = ?</div>
+            <div class="captcha-box" style="justify-content:center;margin-bottom:0.5rem;">
+                <div class="captcha-question" id="submit-captcha-display" style="font-size:1.1rem;padding:0.8rem 1.2rem;">12 + 7 = ?</div>
             </div>
-            <input type="text" id="submit-captcha-input" placeholder="请输入答案" style="width:100%;padding:0.75rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);outline:none;text-align:center;font-size:1.1rem;" />
+            <input type="text" id="submit-captcha-input" placeholder="请输入答案" style="width:100%;padding:0.6rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);outline:none;text-align:center;font-size:1rem;" />
         </div>
         <div style="display:flex;gap:1rem;">
             <button class="btn btn-secondary" style="flex:1;justify-content:center;" onclick="closeCaptchaModal()">取消</button>
-            <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="verifySubmitCaptcha()">确认提交</button>
+            <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="verifySubmitCaptcha()">确认</button>
         </div>
     </div>
 </div>
@@ -803,31 +438,61 @@
     <div class="modal">
         <div class="judge-header">
             <span class="judge-icon" id="judge-icon">⏳</span>
-            <div class="judge-title" id="judge-title">等待评测...</div>
+            <div class="judge-title" id="judge-title">评测中...</div>
             <div class="judge-status-final" id="judge-status" style="display:none;">-</div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="judge-progress"></div>
-            </div>
-            <p style="color:var(--text-secondary);font-size:0.9rem;" id="judge-info">系统繁忙，正在排队...</p>
+            <div class="progress-bar"><div class="progress-fill" id="judge-progress"></div></div>
+            <p style="color:var(--text-secondary);font-size:0.85rem;" id="judge-info">正在编译...</p>
         </div>
         <div class="testcase-grid" id="testcase-grid"></div>
-        <div style="text-align:center;margin-top:1.5rem;">
+        <div style="text-align:center;margin-top:1rem;">
             <button class="btn btn-primary" onclick="closeJudgeModal()" id="judge-close-btn" style="display:none;">关闭</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== 添加题目模态框 ===== -->
+<div class="modal-overlay" id="add-problem-modal">
+    <div class="modal modal-wide">
+        <h2>➕ 添加题目</h2>
+        <div class="form-group"><label>题目编号 *</label><input type="text" id="add-problem-code" placeholder="P0006 / T000001 / U000001" /><div class="form-hint">P + 4位数字 (题库) | T + 6位数字 (团队) | U + 6位数字 (用户)</div></div>
+        <div class="form-group"><label>题目名称 *</label><input type="text" id="add-problem-title" placeholder="例如: 两数之和" /></div>
+        <div class="form-row">
+            <div class="form-group"><label>类型</label>
+                <select id="add-problem-type"><option value="problem">📘 题库题</option><option value="team">👥 团队题</option><option value="user">✨ 用户独创</option></select>
+            </div>
+            <div class="form-group"><label>难度</label>
+                <select id="add-problem-difficulty">
+                    <option value="unrated">暂无评定</option><option value="intro">入门</option>
+                    <option value="popular-minus">普及-</option><option value="popular">普及</option>
+                    <option value="popular-plus">普及+/提高-</option><option value="advanced">提高</option>
+                    <option value="advanced-plus">提高+/省选-</option><option value="provincial">省选/NOI-</option>
+                    <option value="noi">NOI</option><option value="noi-plus">NOI+/CTS/CTT/IOI</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group"><label>时间限制 (ms)</label><input type="number" id="add-problem-time" value="1000" /></div>
+            <div class="form-group"><label>内存限制 (MB)</label><input type="number" id="add-problem-memory" value="128" /></div>
+        </div>
+        <div class="form-group"><label>标签 (逗号分隔)</label><input type="text" id="add-problem-tags" placeholder="模拟, 入门" /></div>
+        <div class="form-group"><label>题目描述 * (支持HTML)</label><textarea id="add-problem-description" rows="4" placeholder="&lt;h3&gt;题目描述&lt;/h3&gt;&lt;p&gt;...&lt;/p&gt;"></textarea></div>
+        <div class="form-group"><label>测试用例 * (JSON数组)</label><textarea id="add-problem-tests" rows="3" placeholder='[{"input":"3 5","output":"8"},{"input":"10 20","output":"30"}]'></textarea></div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeAddProblemModal()">取消</button>
+            <button class="btn btn-primary" onclick="saveProblem()">✅ 添加</button>
         </div>
     </div>
 </div>
 
 <!-- ===== Toast ===== -->
 <div class="toast" id="toast"></div>
+
 <script>
 // ================================================================
-//  API 配置
+// API 配置
 // ================================================================
 const API_BASE = '/api';
 
-// ================================================================
-//  工具函数
-// ================================================================
 function apiCall(endpoint, options = {}) {
     const token = localStorage.getItem('dcf_token');
     return fetch(API_BASE + endpoint, {
@@ -849,11 +514,11 @@ function showToast(msg, type) {
     else if (type === 'success') el.classList.add('toast-success');
     else if (type === 'warning') el.classList.add('toast-warning');
     clearTimeout(el._timer);
-    el._timer = setTimeout(() => { el.classList.remove('show'); }, 3000);
+    el._timer = setTimeout(() => el.classList.remove('show'), 3000);
 }
 
 // ================================================================
-//  用户认证
+// 用户认证
 // ================================================================
 let currentUser = null;
 let authMode = 'login';
@@ -905,37 +570,19 @@ function generateCaptcha() {
 async function handleAuth() {
     const username = document.getElementById('auth-username').value.trim();
     const password = document.getElementById('auth-password').value.trim();
-
     if (!username || !password) { showToast('请填写完整信息', 'warning'); return; }
 
-    // 验证码校验
     const captchaGroup = document.getElementById('captcha-group');
     if (captchaGroup.style.display !== 'none') {
         const input = document.getElementById('captcha-input').value.trim();
         const answer = document.getElementById('captcha-display').dataset.answer;
-        if (input !== answer) {
-            showToast('验证码错误', 'error');
-            generateCaptcha();
-            return;
-        }
+        if (input !== answer) { showToast('验证码错误', 'error'); generateCaptcha(); return; }
     }
 
     try {
         const endpoint = authMode === 'login' ? '/auth/login' : '/auth/register';
-        const result = await apiCall(endpoint, {
-            method: 'POST',
-            body: JSON.stringify({ username, password })
-        });
-
-        if (result.error) {
-            showToast(result.error, 'error');
-            if (authMode === 'login') {
-                document.getElementById('captcha-group').style.display = 'block';
-                generateCaptcha();
-            }
-            return;
-        }
-
+        const result = await apiCall(endpoint, { method: 'POST', body: JSON.stringify({ username, password }) });
+        if (result.error) { showToast(result.error, 'error'); if (authMode === 'login') { document.getElementById('captcha-group').style.display = 'block'; generateCaptcha(); } return; }
         if (result.token) {
             localStorage.setItem('dcf_token', result.token);
             localStorage.setItem('dcf_user', JSON.stringify(result.user));
@@ -946,9 +593,7 @@ async function handleAuth() {
             navigate('home');
             renderPage();
         }
-    } catch (err) {
-        showToast('网络错误', 'error');
-    }
+    } catch (err) { showToast('网络错误', 'error'); }
 }
 
 function logout() {
@@ -962,12 +607,11 @@ function logout() {
 }
 
 // ================================================================
-//  路由系统
+// 路由
 // ================================================================
 function navigate(page, param) {
     if (page === 'problem' && param) location.hash = 'problem/' + param;
     else if (page === 'user' && param) location.hash = 'user/' + param;
-    else if (page === 'team' && param) location.hash = 'team/' + param;
     else location.hash = page;
 }
 
@@ -978,7 +622,7 @@ function getRoute() {
 }
 
 // ================================================================
-//  页面渲染
+// 渲染
 // ================================================================
 const DIFFICULTY_CONFIG = {
     unrated: { label: '暂无评定', color: '#9ca3af', class: 'diff-unrated' },
@@ -995,18 +639,10 @@ const DIFFICULTY_CONFIG = {
 const DIFFICULTY_ORDER = ['unrated', 'intro', 'popular-minus', 'popular', 'popular-plus',
     'advanced', 'advanced-plus', 'provincial', 'noi', 'noi-plus'
 ];
-
 const TYPE_CONFIG = {
     problem: { label: '题库题', badgeClass: 'type-problem', idClass: 'id-problem' },
     team: { label: '团队题', badgeClass: 'type-team', idClass: 'id-team' },
     user: { label: '用户独创', badgeClass: 'type-user', idClass: 'id-user' }
-};
-
-const STATUS_LABELS = {
-    AC: 'AC', WA: 'WA', TLE: 'TLE', RE: 'RE', MLE: 'MLE', OLE: 'OLE',
-    UKE: 'UKE', FE: 'FE', IE: 'IE', PE: 'PE', CE: 'CE', PC: 'PC',
-    SE: 'SE', NTD: 'NTD', JF: 'JF', US: 'US', PD: 'PD', SJE: 'SJE',
-    OE: 'OE', CI: 'CI', OCP: 'OCP', Judging: 'Judging', Waiting: 'Waiting'
 };
 
 function renderPage() {
@@ -1015,13 +651,10 @@ function renderPage() {
     const param = route.param;
     const app = document.getElementById('app');
 
-    // 导航高亮
     document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
-    const navMap = {
-        home: 'nav-home', problems: 'nav-problems', submissions: 'nav-submissions',
+    const navMap = { home: 'nav-home', problems: 'nav-problems', submissions: 'nav-submissions',
         messages: 'nav-messages', notifications: 'nav-notifications',
-        teams: 'nav-teams', users: 'nav-users', about: 'nav-about'
-    };
+        teams: 'nav-teams', users: 'nav-users', about: 'nav-about' };
     if (navMap[page]) document.getElementById(navMap[page]).classList.add('active');
 
     switch (page) {
@@ -1045,7 +678,6 @@ async function renderHome(container) {
     const subs = await apiCall('/submissions');
     const ac = subs.filter(s => s.status === 'AC').length;
     const rate = subs.length ? Math.floor(ac / subs.length * 100) : 0;
-
     let legend = DIFFICULTY_ORDER.map(k => {
         const c = DIFFICULTY_CONFIG[k];
         return `<div class="diff-legend-item"><div class="diff-legend-dot" style="background:${c.color};"></div><span>${c.label}</span></div>`;
@@ -1054,18 +686,18 @@ async function renderHome(container) {
     container.innerHTML = `<div class="page active">
         <div class="hero">
             <h1>Dan_Chao_Fan OJ</h1>
-            <p>自主判题 · 实时评测 · 21种状态 · 安全防护</p>
-            <button class="btn btn-primary" onclick="navigate('problems')"><span>🚀</span> 开始做题</button>
+            <p>自主判题 · 实时评测 · 安全防护</p>
+            <button class="btn btn-primary" onclick="navigate('problems')">🚀 开始做题</button>
         </div>
         <div class="notice-board">
             <div class="notice-title">📢 系统公告</div>
-            <p style="color:var(--text-secondary);">Dan_Chao_Fan OJ v1.0.0 支持 21 种评测状态。P 题库题 · T 团队题 · U 用户独创。</p>
+            <p style="color:var(--text-secondary);">DCF OJ 支持真判题 (C++/Python/Java) · 21种评测状态</p>
             <div class="diff-legend">${legend}</div>
         </div>
         <div class="stats-grid">
-            <div class="stat-card"><span class="stat-number">${problems.length}</span><div class="stat-label">题目总数</div></div>
-            <div class="stat-card"><span class="stat-number">${subs.length}</span><div class="stat-label">总提交</div></div>
-            <div class="stat-card"><span class="stat-number">${ac}</span><div class="stat-label">通过数量</div></div>
+            <div class="stat-card"><span class="stat-number">${problems.length}</span><div class="stat-label">题目</div></div>
+            <div class="stat-card"><span class="stat-number">${subs.length}</span><div class="stat-label">提交</div></div>
+            <div class="stat-card"><span class="stat-number">${ac}</span><div class="stat-label">通过</div></div>
             <div class="stat-card"><span class="stat-number">${rate}%</span><div class="stat-label">通过率</div></div>
         </div>
     </div>`;
@@ -1073,19 +705,20 @@ async function renderHome(container) {
 
 // ===== 题库 =====
 async function renderProblems(container) {
-    let diffOpts = DIFFICULTY_ORDER.map(k =>
-        `<option value="${k}">${DIFFICULTY_CONFIG[k].label}</option>`
-    ).join('');
+    let diffOpts = DIFFICULTY_ORDER.map(k => `<option value="${k}">${DIFFICULTY_CONFIG[k].label}</option>`).join('');
 
     container.innerHTML = `<div class="page active">
-        <h2 style="margin-bottom:1.5rem;font-size:1.8rem;">📚 题目列表</h2>
+        <div class="problem-header-bar">
+            <h2 style="font-size:1.5rem;">📚 题库</h2>
+            ${currentUser?.role === 'admin' ? `<button class="btn btn-primary" onclick="showAddProblemModal()">➕ 添加题目</button>` : ''}
+        </div>
         <div class="filters">
-            <input type="text" id="problem-search" placeholder="搜索题号或题目..." oninput="renderProblemList()" />
+            <input type="text" id="problem-search" placeholder="搜索..." oninput="renderProblemList()" />
             <select id="difficulty-filter" onchange="renderProblemList()"><option value="all">全部难度</option>${diffOpts}</select>
-            <select id="type-filter" onchange="renderProblemList()"><option value="all">全部类型</option><option value="problem">📘 题库题</option><option value="team">👥 团队题</option><option value="user">✨ 用户独创</option></select>
+            <select id="type-filter" onchange="renderProblemList()"><option value="all">全部类型</option><option value="problem">📘 题库</option><option value="team">👥 团队</option><option value="user">✨ 用户</option></select>
         </div>
         <table class="problem-table">
-            <thead><tr><th style="width:60px;">状态</th><th style="width:110px;">题号</th><th>题目名称</th><th style="width:100px;">类型</th><th style="width:140px;">难度</th><th style="width:90px;">通过率</th><th>标签</th></tr></thead>
+            <thead><tr><th>状态</th><th>题号</th><th>名称</th><th>类型</th><th>难度</th><th>通过率</th><th>标签</th></tr></thead>
             <tbody id="problem-list-body"></tbody>
         </table>
     </div>`;
@@ -1101,8 +734,7 @@ async function renderProblemList() {
     const typeFilter = document.getElementById('type-filter')?.value || 'all';
 
     let filtered = problems.filter(p => {
-        const ms = p.title.toLowerCase().includes(search) || p.code.toLowerCase().includes(search) ||
-            p.tags?.some(t => t.includes(search));
+        const ms = p.title?.toLowerCase().includes(search) || p.code?.toLowerCase().includes(search) || (p.tags||[]).some(t => t.includes(search));
         const md = diffFilter === 'all' || p.difficulty === diffFilter;
         const mt = typeFilter === 'all' || p.type === typeFilter;
         return ms && md && mt;
@@ -1110,6 +742,7 @@ async function renderProblemList() {
 
     const tbody = document.getElementById('problem-list-body');
     if (!tbody) return;
+    if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-secondary);padding:2rem;">暂无题目</td></tr>'; return; }
 
     tbody.innerHTML = filtered.map(p => {
         const isSolved = solved.includes(p.code);
@@ -1118,19 +751,72 @@ async function renderProblemList() {
         const ps = subs.filter(s => s.problemCode === p.code);
         const ac = ps.filter(s => s.status === 'AC').length;
         const rate = ps.length ? Math.floor(ac / ps.length * 100) : 0;
-        const link = p.type === 'user' ? `navigate('user','${p.code}')` :
-            `navigate('problem','${p.code}')`;
-
+        const link = p.type === 'user' ? `navigate('user','${p.code}')` : `navigate('problem','${p.code}')`;
         return `<tr onclick="${link}">
             <td>${isSolved ? '<span class="status-solved">✓</span>' : '<span class="status-unsolved">○</span>'}</td>
             <td class="id-display ${tc.idClass}">${p.code}</td>
-            <td style="font-weight:600;">${p.title}</td>
+            <td>${p.title}</td>
             <td><span class="type-badge ${tc.badgeClass}">${tc.label}</span></td>
             <td><span class="difficulty ${dc.class}">${dc.label}</span></td>
             <td>${rate}%</td>
             <td>${(p.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</td>
         </tr>`;
-    }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--text-secondary);padding:2rem;">暂无题目</td></tr>';
+    }).join('');
+}
+
+// ===== 添加题目 =====
+function showAddProblemModal() {
+    if (!currentUser || currentUser.role !== 'admin') { showToast('需要管理员权限', 'warning'); return; }
+    document.getElementById('add-problem-modal').classList.add('active');
+    document.getElementById('add-problem-code').value = '';
+    document.getElementById('add-problem-title').value = '';
+    document.getElementById('add-problem-description').value = '';
+    document.getElementById('add-problem-tests').value = '';
+    document.getElementById('add-problem-tags').value = '';
+}
+
+function closeAddProblemModal() { document.getElementById('add-problem-modal').classList.remove('active'); }
+
+async function saveProblem() {
+    const code = document.getElementById('add-problem-code').value.trim();
+    const title = document.getElementById('add-problem-title').value.trim();
+    const description = document.getElementById('add-problem-description').value.trim();
+    const testsStr = document.getElementById('add-problem-tests').value.trim();
+    const type = document.getElementById('add-problem-type').value;
+    const difficulty = document.getElementById('add-problem-difficulty').value;
+    const timeLimit = parseInt(document.getElementById('add-problem-time').value) || 1000;
+    const memoryLimit = parseInt(document.getElementById('add-problem-memory').value) || 128;
+    const tagsStr = document.getElementById('add-problem-tags').value.trim();
+
+    if (!code) { showToast('请输入题目编号', 'warning'); return; }
+    if (!title) { showToast('请输入题目名称', 'warning'); return; }
+    if (!description) { showToast('请输入题目描述', 'warning'); return; }
+    if (!testsStr) { showToast('请输入测试用例', 'warning'); return; }
+
+    let testCases;
+    try {
+        testCases = JSON.parse(testsStr);
+        if (!Array.isArray(testCases) || !testCases.length) throw new Error('测试用例不能为空');
+    } catch(e) { showToast('测试用例格式错误', 'error'); return; }
+
+    const tags = tagsStr ? tagsStr.split(',').map(s => s.trim()).filter(s => s) : [];
+
+    try {
+        const result = await apiCall('/problems', {
+            method: 'POST',
+            body: JSON.stringify({ code, type, difficulty, title, timeLimit, memoryLimit, tags, description, testCases,
+                templates: {
+                    cpp: '// 请在此编写你的 C++ 代码\n#include <iostream>\nusing namespace std;\n\nint main() {\n    // TODO: 编写你的代码\n    return 0;\n}',
+                    python: '# 请在此编写你的 Python 代码\n# TODO: 编写你的代码',
+                    java: '// 请在此编写你的 Java 代码\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        // TODO: 编写你的代码\n    }\n}'
+                }
+            })
+        });
+        if (result.error) { showToast(result.error, 'error'); return; }
+        showToast('✅ 题目添加成功！', 'success');
+        closeAddProblemModal();
+        renderProblemList();
+    } catch(e) { showToast('添加失败', 'error'); }
 }
 
 // ===== 题目详情 =====
@@ -1146,17 +832,13 @@ async function renderProblemDetail(container, code) {
     const dc = DIFFICULTY_CONFIG[p.difficulty] || DIFFICULTY_CONFIG.unrated;
 
     container.innerHTML = `<div class="page active">
-        <div style="margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
-            <button class="btn btn-secondary" onclick="navigate('problems')"><span>←</span> 返回列表</button>
-            <span style="color:var(--text-secondary);font-size:0.85rem;">${currentUser ? '👤 '+currentUser.username : '⚠️ 请先登录后提交'}</span>
-        </div>
+        <div style="margin-bottom:1rem;"><button class="btn btn-secondary" onclick="navigate('problems')">← 返回</button></div>
         <div class="problem-layout">
             <div class="problem-panel">
                 <div class="problem-header">
                     <div class="problem-title"><span class="id-display ${tc.idClass}">${p.code}</span><span>${p.title}</span></div>
                     <div class="problem-meta">
-                        <span>⏱️ ${p.timeLimit} ms</span>
-                        <span>💾 ${p.memoryLimit} MB</span>
+                        <span>⏱️ ${p.timeLimit}ms</span><span>💾 ${p.memoryLimit}MB</span>
                         <span><span class="difficulty ${dc.class}">${dc.label}</span></span>
                         <span><span class="type-badge ${tc.badgeClass}">${tc.label}</span></span>
                     </div>
@@ -1166,21 +848,18 @@ async function renderProblemDetail(container, code) {
             <div class="editor-panel">
                 <div class="editor-toolbar">
                     <select class="lang-select" id="code-lang" onchange="loadTemplate()">
-                        <option value="cpp">C++ (GCC 11.2)</option>
-                        <option value="python">Python 3.9</option>
-                        <option value="java">Java 17</option>
+                        <option value="cpp">C++</option><option value="python">Python</option><option value="java">Java</option>
                     </select>
-                    <span style="color:var(--text-secondary);font-size:0.85rem;">行号 · Tab缩进</span>
                 </div>
                 <div class="editor-wrapper">
                     <div class="line-numbers" id="line-numbers">1</div>
-                    <textarea class="code-editor" id="code-editor" placeholder="// 在此输入你的代码..." spellcheck="false"></textarea>
+                    <textarea class="code-editor" id="code-editor" placeholder="// 在此输入代码..." spellcheck="false"></textarea>
                 </div>
                 <div class="editor-actions">
-                    <button class="btn btn-secondary" onclick="resetCode()"><span>🔄</span> 重置</button>
-                    <div class="cooldown-hint" id="cooldown-hint"><span class="spinner"></span><span>冷却中 <span id="cooldown-sec">10</span>s</span></div>
+                    <button class="btn btn-secondary" onclick="resetCode()">🔄 重置</button>
+                    <div class="cooldown-hint" id="cooldown-hint"><span class="spinner"></span><span>冷却 <span id="cooldown-sec">10</span>s</span></div>
                     <div style="flex:1;"></div>
-                    <button class="btn btn-primary" id="submit-btn" onclick="preSubmitCheck()"><span>▶️</span> 提交评测</button>
+                    <button class="btn btn-primary" id="submit-btn" onclick="preSubmitCheck()">▶️ 提交</button>
                 </div>
             </div>
         </div>
@@ -1207,13 +886,7 @@ function setupEditor() {
     ed.addEventListener('input', updateLineNumbers);
     ed.addEventListener('scroll', () => { ln.scrollTop = ed.scrollTop; });
     ed.addEventListener('keydown', (e) => {
-        if (e.key === 'Tab') {
-            e.preventDefault();
-            const s = ed.selectionStart, end = ed.selectionEnd;
-            ed.value = ed.value.substring(0, s) + '    ' + ed.value.substring(end);
-            ed.selectionStart = ed.selectionEnd = s + 4;
-            updateLineNumbers();
-        }
+        if (e.key === 'Tab') { e.preventDefault(); const s = ed.selectionStart, end = ed.selectionEnd; ed.value = ed.value.substring(0, s) + '    ' + ed.value.substring(end); ed.selectionStart = ed.selectionEnd = s + 4; updateLineNumbers(); }
     });
 }
 
@@ -1231,14 +904,9 @@ let submissionFilter = 'all';
 
 async function renderSubmissions(container) {
     container.innerHTML = `<div class="page active">
-        <h2 style="margin-bottom:1.5rem;font-size:1.8rem;">📋 提交记录</h2>
+        <h2 style="font-size:1.5rem;margin-bottom:1rem;">📋 提交记录</h2>
         <div class="submission-filters">
-            <button class="filter-btn active" onclick="setSubmissionFilter('all',this)">全部</button>
-            <button class="filter-btn" onclick="setSubmissionFilter('AC',this)">AC</button>
-            <button class="filter-btn" onclick="setSubmissionFilter('WA',this)">WA</button>
-            <button class="filter-btn" onclick="setSubmissionFilter('TLE',this)">TLE</button>
-            <button class="filter-btn" onclick="setSubmissionFilter('CE',this)">CE</button>
-            <button class="filter-btn" onclick="setSubmissionFilter('RE',this)">RE</button>
+            ${['all','AC','WA','TLE','CE','RE'].map(s => `<button class="filter-btn ${s===submissionFilter?'active':''}" onclick="setSubmissionFilter('${s}',this)">${s==='all'?'全部':s}</button>`).join('')}
         </div>
         <table class="problem-table">
             <thead><tr><th>ID</th><th>用户</th><th>题目</th><th>状态</th><th>语言</th><th>耗时</th><th>内存</th><th>时间</th></tr></thead>
@@ -1258,28 +926,17 @@ async function renderSubmissionList() {
     if (!filtered.length) { tbody.innerHTML = ''; if (empty) empty.style.display = 'block'; return; }
     if (empty) empty.style.display = 'none';
 
-    const colors = {
-        AC: '#52c41a', WA: '#ff4d4f', TLE: '#1f1f1f', RE: '#722ed1',
-        MLE: '#1f1f1f', OLE: '#1f1f1f', CE: '#faad14', UKE: '#2f54eb',
-        FE: '#faad14', IE: '#ff4d4f', PE: '#faad14', PC: '#fb923c',
-        SE: '#eb2f96', NTD: '#8c8c8c', JF: '#ff4d4f', US: '#8c8c8c',
-        PD: '#8c8c8c', SJE: '#722ed1', OE: '#faad14', CI: '#1890ff',
-        OCP: '#ff4d4f'
-    };
-
-    tbody.innerHTML = filtered.map(s => {
-        const bg = colors[s.status] || '#8c8c8c';
-        return `<tr>
-            <td style="font-family:monospace;color:var(--text-secondary);">${s.id||'sub_'}</td>
-            <td>${s.username||'Guest'}</td>
-            <td><span class="id-display">${s.problemCode}</span></td>
-            <td><span style="font-weight:700;padding:0.2rem 0.8rem;border-radius:4px;background:${bg};color:white;">${STATUS_LABELS[s.status]||s.status}</span></td>
-            <td style="text-transform:uppercase;">${s.lang}</td>
-            <td>${s.time||0} ms</td>
-            <td>${s.memory||0} MB</td>
-            <td style="color:var(--text-secondary);font-size:0.85rem;">${s.timestamp||''}</td>
-        </tr>`;
-    }).join('');
+    const colors = { AC: '#52c41a', WA: '#ff4d4f', TLE: '#1f1f1f', RE: '#722ed1', CE: '#faad14', UKE: '#2f54eb' };
+    tbody.innerHTML = filtered.map(s => `<tr>
+        <td style="font-family:monospace;font-size:0.8rem;">${s.id||'sub_'}</td>
+        <td>${s.username||'Guest'}</td>
+        <td><span class="id-display">${s.problemCode}</span></td>
+        <td><span style="font-weight:700;padding:0.1rem 0.6rem;border-radius:4px;background:${colors[s.status]||'#8c8c8c'};color:white;font-size:0.8rem;">${s.status}</span></td>
+        <td>${s.lang}</td>
+        <td>${s.time||0}ms</td>
+        <td>${s.memory||0}MB</td>
+        <td style="font-size:0.8rem;color:var(--text-secondary);">${s.timestamp ? new Date(s.timestamp).toLocaleString() : '-'}</td>
+    </tr>`).join('');
 }
 
 function setSubmissionFilter(f, btn) {
@@ -1289,256 +946,87 @@ function setSubmissionFilter(f, btn) {
     renderSubmissionList();
 }
 
-// ===== 个人主页 =====
+// ===== 其他页面（简化） =====
 async function renderProfile(container) {
     if (!currentUser) { showToast('请先登录', 'warning'); navigate('home'); renderPage(); return; }
     const subs = await apiCall('/submissions');
     const us = subs.filter(s => s.username === currentUser.username);
     const ac = us.filter(s => s.status === 'AC').length;
-    const solved = currentUser.solved || [];
-
     container.innerHTML = `<div class="page active">
-        <h2 style="margin-bottom:1.5rem;font-size:1.8rem;">👤 个人主页</h2>
         <div class="profile-header">
             <div class="profile-avatar">${currentUser.username.charAt(0).toUpperCase()}</div>
-            <div class="profile-info"><h2>${currentUser.username}</h2><p>角色: ${currentUser.role === 'admin' ? '管理员' : '用户'}</p></div>
+            <div class="profile-info"><h2>${currentUser.username}</h2><p>${currentUser.role === 'admin' ? '管理员' : '用户'}</p></div>
         </div>
         <div class="profile-stats">
-            <div class="stat-card"><span class="stat-number">${us.length}</span><div class="stat-label">总提交</div></div>
-            <div class="stat-card"><span class="stat-number" style="color:var(--success);">${ac}</span><div class="stat-label">通过数量</div></div>
-            <div class="stat-card"><span class="stat-number">${solved.length}</span><div class="stat-label">已解决</div></div>
-        </div>
-        <h3 style="margin-bottom:1rem;">✅ 已通过的题目</h3>
-        <div style="display:flex;flex-wrap:wrap;gap:0.75rem;">
-            ${solved.length ? solved.map(c=>`<span class="type-badge type-problem" style="cursor:pointer;padding:0.5rem 1rem;" onclick="navigate('problem','${c}')">${c}</span>`).join('') : '<span style="color:var(--text-secondary);">还没有通过的题目，加油！</span>'}
+            <div class="stat-card"><span class="stat-number">${us.length}</span><div class="stat-label">提交</div></div>
+            <div class="stat-card"><span class="stat-number" style="color:var(--success);">${ac}</span><div class="stat-label">通过</div></div>
+            <div class="stat-card"><span class="stat-number">${(currentUser.solved||[]).length}</span><div class="stat-label">已解决</div></div>
         </div>
     </div>`;
 }
 
-// ===== 私信 =====
-async function renderMessages(container) {
-    if (!currentUser) { showToast('请先登录', 'warning'); navigate('home'); renderPage(); return; }
-    const users = await apiCall('/users');
-    const contacts = users.filter(u => u.username !== currentUser.username);
-
-    container.innerHTML = `<div class="page active">
-        <h2 style="margin-bottom:1.5rem;font-size:1.8rem;">💬 私信</h2>
-        <div class="messages-layout">
-            <div class="conversation-list" id="conversation-list">
-                ${contacts.map(u=>`<div class="conversation-item" onclick="loadConversation('${u.username}')" data-user="${u.username}"><div class="name">${u.username}</div><div class="last-msg">点击对话</div></div>`).join('')||'<div style="color:var(--text-secondary);padding:1rem;text-align:center;">暂无其他用户</div>'}
-            </div>
-            <div class="chat-window">
-                <div class="chat-messages" id="chat-messages"><div style="color:var(--text-secondary);text-align:center;padding:2rem;">选择联系人</div></div>
-                <div class="chat-input-area">
-                    <input type="text" id="chat-input" placeholder="输入消息..." onkeydown="if(event.key==='Enter')sendMessage()" />
-                    <button class="btn btn-primary" onclick="sendMessage()">发送</button>
-                </div>
-            </div>
-        </div>
-    </div>`;
+function renderMessages(container) {
+    container.innerHTML = `<div class="page active"><div class="empty-state"><div class="empty-state-icon">💬</div><h3>私信</h3><p>功能开发中</p></div></div>`;
 }
-
-let currentChatUser = null;
-
-function loadConversation(username) {
-    currentChatUser = username;
-    document.querySelectorAll('.conversation-item').forEach(el =>
-        el.classList.toggle('active', el.dataset.user === username));
-    renderChatMessages(username);
-}
-
-function renderChatMessages(username) {
-    const container = document.getElementById('chat-messages');
-    if (!container) return;
-    const msgs = JSON.parse(localStorage.getItem('dcf_messages') || '[]')
-        .filter(m => (m.from === currentUser.username && m.to === username) || (m.from === username && m.to === currentUser.username));
-    if (!msgs.length) { container.innerHTML = `<div style="color:var(--text-secondary);text-align:center;padding:2rem;">和 ${username} 聊天</div>`; return; }
-    container.innerHTML = msgs.map(m =>
-        `<div class="chat-msg ${m.from===currentUser.username?'sent':'received'}"><div>${m.content}</div><div style="font-size:0.7rem;opacity:0.7;margin-top:0.25rem;">${m.time}</div></div>`
-    ).join('');
-    container.scrollTop = container.scrollHeight;
-}
-
-function sendMessage() {
-    const input = document.getElementById('chat-input');
-    const content = input.value.trim();
-    if (!content || !currentChatUser) return;
-    const msgs = JSON.parse(localStorage.getItem('dcf_messages') || '[]');
-    msgs.push({ from: currentUser.username, to: currentChatUser, content, time: new Date().toLocaleString('zh-CN') });
-    localStorage.setItem('dcf_messages', JSON.stringify(msgs));
-    input.value = '';
-    renderChatMessages(currentChatUser);
-    document.querySelectorAll('.conversation-item').forEach(el => {
-        if (el.dataset.user === currentChatUser) el.querySelector('.last-msg').textContent = content;
-    });
-}
-
-// ===== 通知 =====
 function renderNotifications(container) {
-    const ntf = [
-        { title: '系统维护通知', content: 'DCF OJ 本周六 2:00-4:00 维护', time: '2026-08-19 10:30' },
-        { title: '新题目上线', content: 'P0004 快速排序已上线', time: '2026-08-18 14:20' },
-        { title: '评测结果', content: '你的提交 P0001 已通过 (AC)！', time: '2026-08-18 09:15' },
-        { title: '团队邀请', content: '你被邀请加入 "算法竞赛小分队"', time: '2026-08-17 16:45' }
-    ];
-    container.innerHTML = `<div class="page active">
-        <h2 style="margin-bottom:1.5rem;font-size:1.8rem;">🔔 通知</h2>
-        ${ntf.map(n=>`<div class="notification-item"><div style="font-weight:600;">${n.title}</div><div style="color:var(--text-secondary);">${n.content}</div><div class="time">${n.time}</div></div>`).join('')}
-    </div>`;
+    container.innerHTML = `<div class="page active"><div class="empty-state"><div class="empty-state-icon">🔔</div><h3>通知</h3><p>功能开发中</p></div></div>`;
 }
-
-// ===== 团队 =====
 function renderTeams(container) {
-    const teams = JSON.parse(localStorage.getItem('dcf_teams') || '[]');
-    container.innerHTML = `<div class="page active">
-        <h2 style="margin-bottom:1.5rem;font-size:1.8rem;">👥 团队</h2>
-        <div style="margin-bottom:1.5rem;"><button class="btn btn-primary" onclick="createTeam()">➕ 创建团队</button></div>
-        <div class="team-grid">
-            ${teams.length ? teams.map(t=>`<div class="team-card" onclick="navigate('team','${t.id}')"><h3>${t.name}</h3><p style="color:var(--text-secondary);">${t.description||'算法团队'}</p><div class="member-count">👤 ${t.members?t.members.length:0} 人</div></div>`).join('') : '<div style="color:var(--text-secondary);text-align:center;padding:3rem;grid-column:1/-1;">暂无团队，创建一个吧！</div>'}
-        </div>
-    </div>`;
+    container.innerHTML = `<div class="page active"><div class="empty-state"><div class="empty-state-icon">👥</div><h3>团队</h3><p>功能开发中</p></div></div>`;
 }
 
-function createTeam() {
-    if (!currentUser) { showToast('请先登录', 'warning'); return; }
-    const name = prompt('团队名称：');
-    if (!name) return;
-    const teams = JSON.parse(localStorage.getItem('dcf_teams') || '[]');
-    const id = 'T' + String(Date.now()).slice(-6);
-    teams.push({ id, name, description: prompt('团队简介：') || '一个算法团队', members: [currentUser.username], problems: [] });
-    localStorage.setItem('dcf_teams', JSON.stringify(teams));
-    showToast('团队创建成功！', 'success');
-    renderTeams(document.getElementById('app'));
-}
-
-// ===== 用户管理（管理员） =====
 async function renderUsers(container) {
     if (!currentUser || currentUser.role !== 'admin') {
-        container.innerHTML = `<div class="page active"><div class="empty-state"><div class="empty-state-icon">🔒</div><h3>需要管理员权限</h3><p>只有管理员可以访问此页面</p></div></div>`;
+        container.innerHTML = `<div class="page active"><div class="empty-state"><div class="empty-state-icon">🔒</div><h3>需要管理员权限</h3></div></div>`;
         return;
     }
-
     const users = await apiCall('/users');
-
     container.innerHTML = `<div class="page active">
-        <h2 style="margin-bottom:1.5rem;font-size:1.8rem;">👥 用户管理</h2>
-        <div style="margin-bottom:1.5rem;"><button class="btn btn-primary" onclick="showAddUserModal()">➕ 添加用户</button></div>
+        <h2 style="font-size:1.5rem;margin-bottom:1rem;">👥 用户管理</h2>
         <table class="problem-table">
-            <thead><tr><th>ID</th><th>用户名</th><th>角色</th><th>已解决</th><th>注册时间</th><th>操作</th></tr></thead>
-            <tbody>
-                ${users.map(u => `<tr>
-                    <td style="font-family:monospace;font-size:0.8rem;">${u.id}</td>
-                    <td>${u.username}</td>
-                    <td><span class="type-badge ${u.role === 'admin' ? 'type-problem' : 'type-user'}">${u.role === 'admin' ? '管理员' : '用户'}</span></td>
-                    <td>${(u.solved||[]).length} 题</td>
-                    <td style="font-size:0.8rem;color:var(--text-secondary);">${u.created_at ? new Date(u.created_at).toLocaleString() : '-'}</td>
-                    <td>
-                        <div class="admin-actions">
-                            ${u.role !== 'admin' ? `<button class="btn btn-success btn-sm" onclick="setAdmin('${u.id}')">设为管理员</button>` : `<button class="btn btn-secondary btn-sm" onclick="removeAdmin('${u.id}')">移除管理</button>`}
-                            <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}')">删除</button>
-                        </div>
-                    </td>
-                </tr>`).join('')}
-            </tbody>
+            <thead><tr><th>用户名</th><th>角色</th><th>已解决</th><th>操作</th></tr></thead>
+            <tbody>${users.map(u => `<tr>
+                <td>${u.username}</td>
+                <td><span class="type-badge ${u.role==='admin'?'type-problem':'type-user'}">${u.role==='admin'?'管理员':'用户'}</span></td>
+                <td>${(u.solved||[]).length}</td>
+                <td>${u.username !== 'Dan_Chao_Fan' ? `<button class="btn btn-success btn-sm" onclick="setAdmin('${u.id}')">设为管理</button>` : ''}</td>
+            </tr>`).join('')}</tbody>
         </table>
     </div>`;
 }
 
 async function setAdmin(userId) {
-    if (!confirm('确认将该用户设为管理员？')) return;
-    try {
-        const result = await apiCall('/users/' + userId, {
-            method: 'PUT',
-            body: JSON.stringify({ role: 'admin' })
-        });
-        if (result.error) { showToast(result.error, 'error'); return; }
-        showToast('✅ 已设为管理员！', 'success');
-        renderUsers(document.getElementById('app'));
-    } catch { showToast('操作失败', 'error'); }
+    if (!confirm('确认设为管理员？')) return;
+    const result = await apiCall('/users/' + userId, { method: 'PUT', body: JSON.stringify({ role: 'admin' }) });
+    if (result.error) { showToast(result.error, 'error'); return; }
+    showToast('✅ 已设为管理员', 'success');
+    renderUsers(document.getElementById('app'));
 }
 
-async function removeAdmin(userId) {
-    if (!confirm('确认移除该用户的管理员权限？')) return;
-    try {
-        const result = await apiCall('/users/' + userId, {
-            method: 'PUT',
-            body: JSON.stringify({ role: 'user' })
-        });
-        if (result.error) { showToast(result.error, 'error'); return; }
-        showToast('✅ 已移除管理员权限', 'success');
-        renderUsers(document.getElementById('app'));
-    } catch { showToast('操作失败', 'error'); }
-}
-
-async function deleteUser(userId) {
-    if (!confirm('确认删除该用户？此操作不可恢复！')) return;
-    try {
-        const result = await apiCall('/users/' + userId, { method: 'DELETE' });
-        if (result.error) { showToast(result.error, 'error'); return; }
-        showToast('✅ 用户已删除', 'success');
-        renderUsers(document.getElementById('app'));
-    } catch { showToast('操作失败', 'error'); }
-}
-
-function showAddUserModal() {
-    const username = prompt('请输入用户名（支持中文）：');
-    if (!username) return;
-    const password = prompt('请输入密码（至少6位）：');
-    if (!password || password.length < 6) { showToast('密码至少6位', 'warning'); return; }
-    const role = confirm('设为管理员？点击"确定"是管理员，"取消"是普通用户') ? 'admin' : 'user';
-
-    apiCall('/users', {
-        method: 'POST',
-        body: JSON.stringify({ username, password, role })
-    }).then(result => {
-        if (result.error) { showToast(result.error, 'error'); return; }
-        showToast('✅ 用户已添加', 'success');
-        renderUsers(document.getElementById('app'));
-    }).catch(() => showToast('操作失败', 'error'));
-}
-
-// ===== 关于 =====
 function renderAbout(container) {
     let legend = DIFFICULTY_ORDER.map(k => {
         const c = DIFFICULTY_CONFIG[k];
         return `<div class="diff-legend-item"><div class="diff-legend-dot" style="background:${c.color};"></div><span>${c.label}</span></div>`;
     }).join('');
-
-    const statusList = ['AC', 'WA', 'TLE', 'RE', 'MLE', 'OLE', 'UKE', 'FE', 'IE', 'PE', 'CE',
-        'PC', 'SE', 'NTD', 'JF', 'US', 'PD', 'SJE', 'OE', 'CI', 'OCP'
-    ];
-
     container.innerHTML = `<div class="page active">
-        <div style="max-width:800px;margin:0 auto;">
-            <h2 style="margin-bottom:2rem;font-size:2rem;text-align:center;">关于 Dan_Chao_Fan OJ</h2>
-            <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:16px;padding:2rem;margin-bottom:2rem;">
-                <h3 style="color:var(--accent);margin-bottom:1rem;">⚡ 系统信息</h3>
-                <table style="width:100%;border-collapse:collapse;">
-                    <tr style="border-bottom:1px solid var(--border);"><td style="padding:0.75rem 0;color:var(--text-secondary);">系统名称</td><td style="padding:0.75rem 0;text-align:right;font-weight:600;">Dan_Chao_Fan OJ</td></tr>
-                    <tr style="border-bottom:1px solid var(--border);"><td style="padding:0.75rem 0;color:var(--text-secondary);">版本号</td><td style="padding:0.75rem 0;text-align:right;font-family:monospace;color:var(--accent);font-weight:700;">v1.0.0</td></tr>
-                    <tr style="border-bottom:1px solid var(--border);"><td style="padding:0.75rem 0;color:var(--text-secondary);">题目编号</td><td style="padding:0.75rem 0;text-align:right;"><span class="type-badge type-problem">P0001</span> 题库 · <span class="type-badge type-team">T000001</span> 团队 · <span class="type-badge type-user">U000001</span> 用户</td></tr>
-                    <tr><td style="padding:0.75rem 0;color:var(--text-secondary);">评测状态</td><td style="padding:0.75rem 0;text-align:right;">${statusList.map(s=>`<span style="display:inline-block;font-weight:700;padding:0.1rem 0.4rem;border-radius:4px;font-size:0.7rem;background:#334155;margin:0.1rem;">${s}</span>`).join('')}</td></tr>
-                </table>
-            </div>
-            <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:16px;padding:2rem;margin-bottom:2rem;">
-                <h3 style="color:var(--accent);margin-bottom:1rem;">🎨 难度颜色</h3>
-                <div style="display:flex;flex-direction:column;gap:0.75rem;">${legend}</div>
-            </div>
-            <div style="text-align:center;color:var(--text-secondary);font-size:0.9rem;">
-                <p>© 2026 Dan_Chao_Fan OJ Team. Built with ❤️</p>
+        <div style="max-width:700px;margin:0 auto;">
+            <h2 style="font-size:1.8rem;text-align:center;margin-bottom:1.5rem;">关于 DCF OJ</h2>
+            <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:16px;padding:1.5rem;">
+                <p><strong>Dan_Chao_Fan OJ</strong> v1.0.0</p>
+                <p style="color:var(--text-secondary);">支持 C++ / Python / Java 真判题</p>
+                <div style="margin-top:1rem;">${legend}</div>
             </div>
         </div>
     </div>`;
 }
 
 // ================================================================
-//  判题系统
+// 判题
 // ================================================================
 function preSubmitCheck() {
     if (!currentUser) { showToast('请先登录', 'warning'); return; }
     const code = document.getElementById('code-editor')?.value.trim();
     if (!code || code.length < 5) { showToast('代码太短', 'warning'); return; }
-    // 显示验证码
     const a = Math.floor(Math.random() * 20) + 1, b = Math.floor(Math.random() * 20) + 1;
     document.getElementById('submit-captcha-display').textContent = a + ' + ' + b + ' = ?';
     document.getElementById('submit-captcha-display').dataset.answer = String(a + b);
@@ -1551,14 +1039,7 @@ function closeCaptchaModal() { document.getElementById('captcha-modal').classLis
 async function verifySubmitCaptcha() {
     const input = document.getElementById('submit-captcha-input').value.trim();
     const answer = document.getElementById('submit-captcha-display').dataset.answer;
-    if (input !== answer) {
-        showToast('验证码错误', 'error');
-        const a = Math.floor(Math.random() * 20) + 1, b = Math.floor(Math.random() * 20) + 1;
-        document.getElementById('submit-captcha-display').textContent = a + ' + ' + b + ' = ?';
-        document.getElementById('submit-captcha-display').dataset.answer = String(a + b);
-        document.getElementById('submit-captcha-input').value = '';
-        return;
-    }
+    if (input !== answer) { showToast('验证码错误', 'error'); return; }
     closeCaptchaModal();
     executeSubmit();
 }
@@ -1570,182 +1051,66 @@ async function executeSubmit() {
     try {
         const result = await apiCall('/submissions', {
             method: 'POST',
-            body: JSON.stringify({
-                problemCode: currentProblemCode,
-                code: code,
-                lang: lang
-            })
+            body: JSON.stringify({ problemCode: currentProblemCode, code, lang })
         });
-
         if (result.error) { showToast(result.error, 'error'); return; }
 
-        // 模拟判题过程
-        const modal = document.getElementById('judge-modal');
-        const progress = document.getElementById('judge-progress');
-        const icon = document.getElementById('judge-icon');
-        const title = document.getElementById('judge-title');
-        const status = document.getElementById('judge-status');
-        const info = document.getElementById('judge-info');
-        const grid = document.getElementById('testcase-grid');
-        const closeBtn = document.getElementById('judge-close-btn');
-
-        modal.classList.add('active');
-        progress.style.width = '0%';
-        icon.textContent = '⏳';
-        title.textContent = '正在评测...';
-        status.style.display = 'none';
-        info.textContent = '正在编译代码...';
-        closeBtn.style.display = 'none';
-        grid.innerHTML = '';
-
-        // 获取题目测试用例
-        const problems = await apiCall('/problems');
-        const p = problems.find(x => x.code === currentProblemCode);
-        const testCases = p?.testCases || [];
-
-        const allStatuses = ['AC', 'WA', 'TLE', 'RE', 'MLE', 'OLE', 'UKE', 'FE', 'IE',
-            'PE', 'CE', 'PC', 'SE', 'NTD', 'JF', 'US', 'PD', 'SJE', 'OE', 'CI', 'OCP'
-        ];
-        const statusIcons = {
-            AC: '✅', WA: '❌', TLE: '⏰', RE: '💥', MLE: '💾', OLE: '📤',
-            UKE: '❓', FE: '⚠️', IE: '⚠️', PE: '⚠️', CE: '🔧', PC: '🔶',
-            SE: '💔', NTD: '⏸️', JF: '❌', US: '🚫', PD: '⏳', SJE: '⚡',
-            OE: '⚠️', CI: '🔵', OCP: '🚫'
-        };
-        const statusLabels = {
-            AC: 'AC', WA: 'WA', TLE: 'TLE', RE: 'RE', MLE: 'MLE', OLE: 'OLE',
-            UKE: 'UKE', FE: 'FE', IE: 'IE', PE: 'PE', CE: 'CE', PC: 'PC',
-            SE: 'SE', NTD: 'NTD', JF: 'JF', US: 'US', PD: 'PD', SJE: 'SJE',
-            OE: 'OE', CI: 'CI', OCP: 'OCP'
-        };
-
-        const blocks = [];
-        testCases.forEach((tc, i) => {
-            const b = document.createElement('div');
-            b.className = 'testcase-block tc-Waiting';
-            b.id = 'tc-' + i;
-            b.innerHTML = `<div class="tc-num">#${i+1}</div><div class="tc-status">⏳</div><div class="tc-info">等待</div>`;
-            grid.appendChild(b);
-            blocks.push(b);
-        });
-
-        let finalStatus = 'AC';
-        let totalTime = 0,
-            maxMemory = 0;
-
-        setTimeout(() => { progress.style.width = '10%'; info.textContent = '编译中...'; }, 300);
-        setTimeout(() => { progress.style.width = '25%'; info.textContent = '编译成功，开始评测...'; }, 800);
-
-        let idx = 0;
-
-        function runNext() {
-            if (idx >= testCases.length) { finish(); return; }
-            const block = blocks[idx];
-            block.className = 'testcase-block tc-Judging';
-            block.querySelector('.tc-status').textContent = '⚡';
-            block.querySelector('.tc-info').textContent = '评测中';
-
-            setTimeout(() => {
-                const statusIdx = Math.floor(Math.random() * allStatuses.length);
-                const actualStatus = idx < testCases.length * 0.4 && Math.random() > 0.3 ? 'AC' : allStatuses[statusIdx];
-
-                if (actualStatus !== 'AC' && finalStatus === 'AC') finalStatus = actualStatus;
-                totalTime += Math.floor(Math.random() * 80 + 10);
-                maxMemory = Math.max(maxMemory, Math.floor(Math.random() * 20 + 2));
-
-                block.className = `testcase-block tc-${actualStatus}`;
-                block.querySelector('.tc-status').textContent = statusIcons[actualStatus] || '❓';
-                block.querySelector('.tc-info').textContent = statusLabels[actualStatus] || actualStatus;
-
-                const pct = 25 + ((idx + 1) / testCases.length) * 70;
-                progress.style.width = pct + '%';
-                info.textContent = `测试点 #${idx+1} ${actualStatus === 'AC' ? '通过' : actualStatus}`;
-
-                idx++;
-                setTimeout(runNext, 300 + Math.random() * 300);
-            }, 400 + Math.random() * 400);
-        }
-
-        function finish() {
-            progress.style.width = '100%';
-            const sm = {
-                AC: { icon: '✅', text: 'Accepted', cls: 'status-AC' },
-                WA: { icon: '❌', text: 'Wrong Answer', cls: 'status-WA' },
-                TLE: { icon: '⏰', text: 'Time Limit Exceeded', cls: 'status-TLE' },
-                RE: { icon: '💥', text: 'Runtime Error', cls: 'status-RE' },
-                MLE: { icon: '💾', text: 'Memory Limit Exceeded', cls: 'status-MLE' },
-                OLE: { icon: '📤', text: 'Output Limit Exceeded', cls: 'status-OLE' },
-                CE: { icon: '🔧', text: 'Compile Error', cls: 'status-CE' },
-                UKE: { icon: '❓', text: 'Unknown Error', cls: 'status-UKE' },
-                FE: { icon: '⚠️', text: 'Format Error', cls: 'status-FE' },
-                IE: { icon: '⚠️', text: 'Internal Error', cls: 'status-IE' },
-                PE: { icon: '⚠️', text: 'Presentation Error', cls: 'status-PE' },
-                PC: { icon: '🔶', text: 'Partially Correct', cls: 'status-PC' },
-                SE: { icon: '💔', text: 'System Error', cls: 'status-SE' },
-                NTD: { icon: '⏸️', text: 'Not Tested', cls: 'status-NTD' },
-                JF: { icon: '❌', text: 'Judging Failed', cls: 'status-JF' },
-                US: { icon: '🚫', text: 'Unsupported', cls: 'status-US' },
-                PD: { icon: '⏳', text: 'Pending', cls: 'status-PD' },
-                SJE: { icon: '⚡', text: 'Special Judge Error', cls: 'status-SJE' },
-                OE: { icon: '⚠️', text: 'Output Error', cls: 'status-OE' },
-                CI: { icon: '🔵', text: 'Compiling', cls: 'status-CI' },
-                OCP: { icon: '🚫', text: 'Out of Content Policy', cls: 'status-OCP' }
-            };
-            const s = sm[finalStatus] || sm.AC;
-            icon.textContent = s.icon;
-            title.textContent = '评测完成';
-            status.textContent = s.text;
-            status.className = `judge-status-final ${s.cls}`;
-            status.style.display = 'inline-block';
-            info.textContent = `总耗时: ${totalTime} ms | 峰值内存: ${maxMemory} MB | 语言: ${lang.toUpperCase()}`;
-            closeBtn.style.display = 'inline-flex';
-
-            // 刷新提交记录
-            renderSubmissionList();
-        }
-
-        runNext();
-
-    } catch (err) {
-        showToast('提交失败', 'error');
-    }
+        // 轮询结果
+        let status = 'PD';
+        let attempts = 0;
+        const interval = setInterval(async () => {
+            attempts++;
+            const subs = await apiCall('/submissions');
+            const sub = subs.find(s => s.id === result.id);
+            if (sub && sub.status !== 'PD') {
+                clearInterval(interval);
+                status = sub.status;
+                showJudgeResult(status);
+            }
+            if (attempts > 30) { clearInterval(interval); showToast('判题超时', 'error'); }
+        }, 500);
+    } catch (err) { showToast('提交失败', 'error'); }
 }
 
-function closeJudgeModal() {
-    document.getElementById('judge-modal').classList.remove('active');
+function showJudgeResult(status) {
+    const sm = { AC: { icon: '✅', text: 'Accepted', cls: 'status-AC' }, WA: { icon: '❌', text: 'Wrong Answer', cls: 'status-WA' },
+        TLE: { icon: '⏰', text: 'Time Limit Exceeded', cls: 'status-TLE' }, RE: { icon: '💥', text: 'Runtime Error', cls: 'status-RE' },
+        CE: { icon: '🔧', text: 'Compile Error', cls: 'status-CE' }, MLE: { icon: '💾', text: 'Memory Limit Exceeded', cls: 'status-MLE' },
+        UKE: { icon: '❓', text: 'Unknown Error', cls: 'status-UKE' } };
+    const s = sm[status] || sm.AC;
+    document.getElementById('judge-icon').textContent = s.icon;
+    document.getElementById('judge-title').textContent = '评测完成';
+    document.getElementById('judge-status').textContent = s.text;
+    document.getElementById('judge-status').className = `judge-status-final ${s.cls}`;
+    document.getElementById('judge-status').style.display = 'inline-block';
+    document.getElementById('judge-close-btn').style.display = 'inline-flex';
+    document.getElementById('judge-modal').classList.add('active');
 }
+
+function closeJudgeModal() { document.getElementById('judge-modal').classList.remove('active'); }
 
 // ================================================================
-//  路由监听与启动
+// 启动
 // ================================================================
 window.addEventListener('hashchange', renderPage);
+window.addEventListener('load', () => { updateAuthUI(); renderPage(); });
 
-window.addEventListener('load', () => {
-    updateAuthUI();
-    renderPage();
-});
-
-// 暴露给 HTML onclick 使用
 window.navigate = navigate;
 window.showAuthModal = showAuthModal;
 window.switchAuthMode = switchAuthMode;
 window.handleAuth = handleAuth;
 window.logout = logout;
 window.renderProblemList = renderProblemList;
-window.loadTemplate = loadTemplate;
 window.resetCode = resetCode;
 window.preSubmitCheck = preSubmitCheck;
 window.closeCaptchaModal = closeCaptchaModal;
 window.verifySubmitCaptcha = verifySubmitCaptcha;
 window.closeJudgeModal = closeJudgeModal;
 window.setSubmissionFilter = setSubmissionFilter;
-window.loadConversation = loadConversation;
-window.sendMessage = sendMessage;
-window.createTeam = createTeam;
 window.setAdmin = setAdmin;
-window.removeAdmin = removeAdmin;
-window.deleteUser = deleteUser;
-window.showAddUserModal = showAddUserModal;
+window.showAddProblemModal = showAddProblemModal;
+window.closeAddProblemModal = closeAddProblemModal;
+window.saveProblem = saveProblem;
 </script>
 </body>
 </html>
