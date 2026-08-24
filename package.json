@@ -9,6 +9,7 @@
     "dotenv": "^16.3.1"
   },
   "scripts": {
-    "start": "node api/index.js"
+    "start": "node server.js"
   }
 }
+
