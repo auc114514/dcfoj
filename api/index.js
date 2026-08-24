@@ -3,8 +3,7 @@ const cors = require('cors');
 const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { S3Client, GetObjectCommand, PutObjectCommand, ListObjectsCommand } = require('@aws-sdk/client-s3');
-const { exec, execSync } = require('child_process');
+const fetch = require('node-fetch');const { exec, execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
@@ -33,18 +32,13 @@ const b2Client = new S3Client({
 const B2_BUCKET = process.env.B2_BUCKET || 'dcf-oj-data';
 
 // ========== 从 B2 读取文件 ==========
+// ========== 从 Backblaze B2 读取文件（直接用 HTTP） ==========
 async function readFromB2(key) {
     try {
-        const command = new GetObjectCommand({
-            Bucket: B2_BUCKET,
-            Key: key,
-        });
-        const response = await b2Client.send(command);
-        const chunks = [];
-        for await (const chunk of response.Body) {
-            chunks.push(chunk);
-        }
-        return Buffer.concat(chunks).toString('utf8');
+        const url = `https://f000.backblazeb2.com/file/${B2_BUCKET}/${key}`;
+        const response = await fetch(url);
+        if (!response.ok) return null;
+        return await response.text();
     } catch (e) {
         return null;
     }
