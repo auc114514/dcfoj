@@ -473,16 +473,14 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// 启动服务器
-// 本地开发用
-if (process.env.NODE_ENV !== 'production') {
-    app.listen(PORT, () => {
-        console.log(`\n🚀 DCF OJ Backend 已启动`);
-        console.log(`📍 http://localhost:${PORT}`);
-        console.log(`📁 数据目录: ${DATA_DIR}`);
-        console.log(`👑 管理员: Dan_Chao_Fan (密码: admin123456)\n`);
-    });
-}
+// 启动服务器 - 在所有环境中启动
+app.listen(PORT, () => {
+    console.log(`\n🚀 DCF OJ Backend 已启动`);
+    console.log(`📍 http://localhost:${PORT}`);
+    console.log(`📁 数据目录: ${DATA_DIR}`);
+    console.log(`👑 管理员: Dan_Chao_Fan (密码: admin123456)\n`);
+});
 
 // Vercel 导出
 module.exports = app;
+
