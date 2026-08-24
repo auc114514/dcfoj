@@ -3,23 +3,63 @@ const cors = require('cors');
 const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { S3Client, GetObjectCommand, PutObjectCommand, ListObjectsCommand } = require('@aws-sdk/client-s3');
 const { exec, execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const stream = require('stream');
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 
-// ========== 连接数据库 ==========
+// ========== 数据库连接 ==========
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }
 });
 
-// ========== 真·判题引擎 ==========
-async function runJudge(code, lang, testCases, timeLimit = 1000) {
+// ========== Backblaze B2 客户端 ==========
+const b2Client = new S3Client({
+    region: 'us-east-1',
+    endpoint: process.env.B2_ENDPOINT,
+    credentials: {
+        accessKeyId: process.env.B2_KEY_ID,
+        secretAccessKey: process.env.B2_APP_KEY,
+    },
+});
+
+const B2_BUCKET = process.env.B2_BUCKET || 'dcf-oj-data';
+
+// ========== 从 B2 读取文件 ==========
+async function readFromB2(key) {
+    try {
+        const command = new GetObjectCommand({
+            Bucket: B2_BUCKET,
+            Key: key,
+        });
+        const response = await b2Client.send(command);
+        const chunks = [];
+        for await (const chunk of response.Body) {
+            chunks.push(chunk);
+        }
+        return Buffer.concat(chunks).toString('utf8');
+    } catch (e) {
+        return null;
+    }
+}
+
+// ========== 从 B2 读取测试数据 ==========
+async function fetchTestData(problemCode, idx) {
+    const input = await readFromB2(`${problemCode}/${idx}.in`);
+    const output = await readFromB2(`${problemCode}/${idx}.out`);
+    if (input === null || output === null) return null;
+    return { input: input.trim(), output: output.trim() };
+}
+
+// ========== 真判题引擎 ==========
+async function runJudge(code, lang, problemCode, timeLimit = 1000) {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'judge-'));
     const results = [];
     let finalStatus = 'AC';
@@ -33,22 +73,10 @@ async function runJudge(code, lang, testCases, timeLimit = 1000) {
                 run: (f) => `./${f}.out`,
                 needCompile: true
             },
-            'cpp98': {
-                ext: '.cpp',
-                compile: (f) => `g++ -std=c++98 ${f} -o ${f}.out`,
-                run: (f) => `./${f}.out`,
-                needCompile: true
-            },
             'python': {
                 ext: '.py',
                 compile: null,
                 run: (f) => `python3 ${f}`,
-                needCompile: false
-            },
-            'pypy3': {
-                ext: '.py',
-                compile: null,
-                run: (f) => `pypy3 ${f}`,
                 needCompile: false
             },
             'java': {
@@ -73,33 +101,36 @@ async function runJudge(code, lang, testCases, timeLimit = 1000) {
             }
         }
 
-        for (let i = 0; i < testCases.length; i++) {
-            const tc = testCases[i];
-            const start = Date.now();
+        // 从 B2 读取测试点
+        let idx = 1;
+        while (true) {
+            const data = await fetchTestData(problemCode, idx);
+            if (!data) break;
 
+            const start = Date.now();
             try {
                 const output = execSync(
-                    `echo "${tc.input.replace(/"/g, '\\"')}" | ${cfg.run(fileName)}`,
+                    `echo "${data.input.replace(/"/g, '\\"')}" | ${cfg.run(fileName)}`,
                     { timeout: timeLimit, maxBuffer: 1024 * 1024 * 10, stdio: 'pipe', shell: true }
                 );
-
                 const elapsed = Date.now() - start;
                 const got = output.toString().trim();
-                const expected = tc.output.trim();
-
-                const status = got === expected ? 'AC' : 'WA';
-                results.push({ index: i, status, time: elapsed, memory: 0, expected, got });
-
+                const status = got === data.output ? 'AC' : 'WA';
+                results.push({ index: idx, status, time: elapsed, memory: 0 });
                 if (status !== 'AC' && finalStatus === 'AC') finalStatus = status;
                 totalTime += elapsed;
-
             } catch (e) {
                 let status = 'RE';
                 if (e.signal === 'SIGTERM' || e.killed) status = 'TLE';
-                results.push({ index: i, status, time: timeLimit, memory: 0, error: e.message });
+                results.push({ index: idx, status, time: timeLimit, memory: 0 });
                 if (finalStatus === 'AC') finalStatus = status;
                 totalTime += timeLimit;
             }
+            idx++;
+        }
+
+        if (results.length === 0) {
+            return { status: 'NTD', error: '没有测试数据' };
         }
 
     } catch (e) {
@@ -111,7 +142,7 @@ async function runJudge(code, lang, testCases, timeLimit = 1000) {
     return { status: finalStatus, results, totalTime, maxMemory: 0 };
 }
 
-// ========== 初始化数据库表 ==========
+// ========== 初始化数据库 ==========
 async function initDB() {
     try {
         await pool.query(`
@@ -127,15 +158,16 @@ async function initDB() {
         await pool.query(`
             CREATE TABLE IF NOT EXISTS problems (
                 code VARCHAR(20) PRIMARY KEY,
-                type VARCHAR(20),
-                difficulty VARCHAR(20),
+                type VARCHAR(20) DEFAULT 'problem',
+                difficulty VARCHAR(20) DEFAULT 'unrated',
                 title TEXT,
-                time_limit INT,
-                memory_limit INT,
+                time_limit INT DEFAULT 1000,
+                memory_limit INT DEFAULT 128,
                 tags TEXT[],
                 description TEXT,
                 test_cases JSONB,
                 templates JSONB,
+                data_path VARCHAR(100),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         `);
@@ -163,17 +195,16 @@ async function initDB() {
             );
             console.log('✅ 管理员账号已创建 (Dan_Chao_Fan / admin123456)');
         }
-        console.log('✅ 数据库连接和表初始化成功！');
+        console.log('✅ 数据库连接成功！');
     } catch (err) {
         console.error('❌ 数据库初始化失败:', err.message);
     }
 }
 initDB();
 
-// ============================================================
-// API 路由
-// ============================================================
+// ========== API 路由 ==========
 
+// 健康检查
 app.get('/api/health', async (req, res) => {
     try {
         await pool.query('SELECT 1');
@@ -183,6 +214,7 @@ app.get('/api/health', async (req, res) => {
     }
 });
 
+// 注册
 app.post('/api/auth/register', async (req, res) => {
     const { username, password } = req.body;
     if (!/^[a-zA-Z0-9_\u4e00-\u9fa5]{2,20}$/.test(username)) {
@@ -209,6 +241,7 @@ app.post('/api/auth/register', async (req, res) => {
     }
 });
 
+// 登录
 app.post('/api/auth/login', async (req, res) => {
     const { username, password } = req.body;
     try {
@@ -225,6 +258,7 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
+// 验证 token
 app.get('/api/auth/verify', async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ error: '未提供token' });
@@ -237,6 +271,7 @@ app.get('/api/auth/verify', async (req, res) => {
     } catch { res.status(401).json({ error: 'token无效' }); }
 });
 
+// 获取题目列表
 app.get('/api/problems', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM problems ORDER BY code');
@@ -247,6 +282,7 @@ app.get('/api/problems', async (req, res) => {
     }
 });
 
+// 获取单个题目
 app.get('/api/problems/:code', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM problems WHERE code = $1', [req.params.code]);
@@ -262,7 +298,8 @@ app.get('/api/problems/:code', async (req, res) => {
             tags: p.tags || [],
             description: p.description,
             testCases: p.test_cases || [],
-            templates: p.templates || {}
+            templates: p.templates || {},
+            dataPath: p.data_path
         });
     } catch (err) {
         console.error(err);
@@ -270,27 +307,26 @@ app.get('/api/problems/:code', async (req, res) => {
     }
 });
 
+// 添加题目
 app.post('/api/problems', async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ error: '未授权' });
     try {
         const decoded = jwt.verify(token, 'dcf_secret');
-        if (decoded.role !== 'admin') return res.status(403).json({ error: '需要管理员权限' });
+        if (decoded.role !== 'admin') {
+            return res.status(403).json({ error: '需要管理员权限' });
+        }
     } catch { return res.status(401).json({ error: 'token无效' }); }
 
-    const { code, type, difficulty, title, timeLimit, memoryLimit, tags, description, testCases, templates } = req.body;
+    const { code, type, difficulty, title, timeLimit, memoryLimit, tags, description, testCases, templates, dataPath } = req.body;
     if (!code || !title || !description) return res.status(400).json({ error: '缺少必要字段' });
 
     try {
         await pool.query(
-            `INSERT INTO problems (code, type, difficulty, title, time_limit, memory_limit, tags, description, test_cases, templates)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+            `INSERT INTO problems (code, type, difficulty, title, time_limit, memory_limit, tags, description, test_cases, templates, data_path)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
             [code, type || 'problem', difficulty || 'unrated', title, timeLimit || 1000, memoryLimit || 128,
-             tags || [], description, testCases || [], templates || {
-                cpp: '// 请在此编写你的 C++ 代码\n#include <iostream>\nusing namespace std;\n\nint main() {\n    // TODO: 编写你的代码\n    return 0;\n}',
-                python: '# 请在此编写你的 Python 代码\n# TODO: 编写你的代码',
-                java: '// 请在此编写你的 Java 代码\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        // TODO: 编写你的代码\n    }\n}'
-            }]
+             tags || [], description, testCases || [], templates || {}, dataPath || code]
         );
         res.status(201).json({ code, title });
     } catch (err) {
@@ -300,6 +336,7 @@ app.post('/api/problems', async (req, res) => {
     }
 });
 
+// 删除题目
 app.delete('/api/problems/:code', async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ error: '未授权' });
@@ -318,62 +355,7 @@ app.delete('/api/problems/:code', async (req, res) => {
     }
 });
 
-app.get('/api/users', async (req, res) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) return res.status(401).json({ error: '未授权' });
-    try {
-        const decoded = jwt.verify(token, 'dcf_secret');
-        if (decoded.role !== 'admin') return res.status(403).json({ error: '需要管理员权限' });
-    } catch { return res.status(401).json({ error: 'token无效' }); }
-    try {
-        const result = await pool.query('SELECT id, username, role, solved, created_at FROM users ORDER BY created_at');
-        res.json(result.rows);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: '服务器错误' });
-    }
-});
-
-app.put('/api/users/:id', async (req, res) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) return res.status(401).json({ error: '未授权' });
-    let decoded;
-    try { decoded = jwt.verify(token, 'dcf_secret'); if (decoded.role !== 'admin') return res.status(403).json({ error: '需要管理员权限' }); } 
-    catch { return res.status(401).json({ error: 'token无效' }); }
-
-    const { role } = req.body;
-    if (!role || !['user', 'admin'].includes(role)) return res.status(400).json({ error: '无效的角色' });
-    try {
-        const userCheck = await pool.query('SELECT username FROM users WHERE id = $1', [req.params.id]);
-        if (userCheck.rows.length === 0) return res.status(404).json({ error: '用户不存在' });
-        if (userCheck.rows[0].username === 'Dan_Chao_Fan') return res.status(400).json({ error: '不能修改超级管理员的权限' });
-        await pool.query('UPDATE users SET role = $1 WHERE id = $2', [role, req.params.id]);
-        res.json({ id: req.params.id, role });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: '服务器错误' });
-    }
-});
-
-app.delete('/api/users/:id', async (req, res) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) return res.status(401).json({ error: '未授权' });
-    let decoded;
-    try { decoded = jwt.verify(token, 'dcf_secret'); if (decoded.role !== 'admin') return res.status(403).json({ error: '需要管理员权限' }); } 
-    catch { return res.status(401).json({ error: 'token无效' }); }
-    try {
-        const userCheck = await pool.query('SELECT username FROM users WHERE id = $1', [req.params.id]);
-        if (userCheck.rows.length === 0) return res.status(404).json({ error: '用户不存在' });
-        if (userCheck.rows[0].username === 'Dan_Chao_Fan') return res.status(400).json({ error: '不能删除超级管理员' });
-        if (req.params.id === decoded.id) return res.status(400).json({ error: '不能删除自己' });
-        await pool.query('DELETE FROM users WHERE id = $1', [req.params.id]);
-        res.json({ message: '用户已删除' });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: '服务器错误' });
-    }
-});
-
+// 提交代码
 app.post('/api/submissions', async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ error: '请先登录' });
@@ -389,7 +371,7 @@ app.post('/api/submissions', async (req, res) => {
 
     const subId = 'sub_' + Date.now();
     try {
-        const problemRes = await pool.query('SELECT test_cases, time_limit FROM problems WHERE code = $1', [problemCode]);
+        const problemRes = await pool.query('SELECT time_limit, data_path FROM problems WHERE code = $1', [problemCode]);
         const problem = problemRes.rows[0];
         if (!problem) return res.status(404).json({ error: '题目不存在' });
 
@@ -399,11 +381,12 @@ app.post('/api/submissions', async (req, res) => {
             [subId, username, userId, problemCode, code.slice(0, 5000), lang, 'PD']
         );
 
-        // 真判题
+        // 真判题（从 B2 读取测试数据）
+        const dataPath = problem.data_path || problemCode;
         const judgeResult = await runJudge(
             code,
             lang,
-            problem.test_cases || [],
+            dataPath,
             problem.time_limit || 1000
         );
 
@@ -428,6 +411,7 @@ app.post('/api/submissions', async (req, res) => {
     }
 });
 
+// 获取提交记录
 app.get('/api/submissions', async (req, res) => {
     const { username, problemCode, status } = req.query;
     let sql = 'SELECT * FROM submissions WHERE 1=1';
