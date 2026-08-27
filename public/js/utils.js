@@ -59,3 +59,14 @@ function generateTicketId() {
     }
     return result;
 }
+// 防抖函数
+function debounce(fn, delay = 300) {
+    let timer = null;
+    return function(...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn.apply(this, args), delay);
+    };
+}
+
+// 使用防抖包装 navigate
+const navigateDebounced = debounce(navigate, 200);
