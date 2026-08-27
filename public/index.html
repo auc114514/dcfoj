@@ -2747,52 +2747,52 @@
         //  管理员
         // ================================================================
         async function renderAdmin(container) {
-            if (!currentUser || currentUser.role !== 'admin') {
-                container.innerHTML =
-                    `<div class="page active"><div class="empty-state">🔒 需要管理员权限</div></div>`;
-                return;
-            }
-            const stats = await apiCall('/admin/stats');
-            const users = await apiCall('/users');
+    if (!currentUser || currentUser.role !== 'admin') {
+        container.innerHTML =
+            `<div class="page active"><div class="empty-state">🔒 需要管理员权限</div></div>`;
+        return;
+    }
+    const stats = await apiCall('/admin/stats');
+    const users = await apiCall('/users');
 
-            container.innerHTML = `
-                <div class="page active">
-                    <h2 style="font-size:1.3rem;margin-bottom:0.8rem;">🛡️ 管理面板</h2>
-                    <div class="admin-stats-grid">
-                        <div class="stat-card"><span class="stat-number">${stats.users||0}</span><div class="stat-label">用户</div></div>
-                        <div class="stat-card"><span class="stat-number">${stats.problems||0}</span><div class="stat-label">题目</div></div>
-                        <div class="stat-card"><span class="stat-number">${stats.submissions||0}</span><div class="stat-label">提交</div></div>
-                        <div class="stat-card"><span class="stat-number">${stats.openTickets||0}</span><div class="stat-label">工单</div></div>
-                    </div>
-                    <div class="card">
-                        <div class="card-title">👥 用户</div>
-                        <div class="table-wrap">
-                            <table class="table">
-                                <thead><tr><th>UID</th><th>用户名</th><th>角色</th><th>已解决</th><th>操作</th></tr></thead>
-                                <tbody>
-                                    ${users.map(u => {
-                                        const nameHtml = getUsernameHtml(u);
-                                        const roleMap = { admin: '管理员', cheater: '作弊者', user: '用户', banned: '已封禁' };
-                                        return `
-                                        <tr>
-                                            <td style="font-family:monospace;font-size:0.8rem;">${u.uid}</td>
-                                            <td>${nameHtml}</td>
-                                            <td>${roleMap[u.role]||'用户'}</td>
-                                            <td>${(u.solved||[]).length}</td>
-                                            <td>
-                                                <button class="btn btn-secondary btn-sm" onclick="showRoleModal('${u.id}','${u.username}')">🏷️ 改角色</button>
-                                                <button class="btn btn-danger btn-sm" onclick="showRevokeModal('${u.id}','${u.username}')">🔽 撤销</button>
-                                                ${u.role !== 'admin' && u.username !== 'Dan_Chao_Fan' ? `<button class="btn btn-danger btn-sm" onclick="banUser('${u.id}')">封禁</button>` : ''}
-                                            </td>
-                                        </tr>
-                                    `}).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+    container.innerHTML = `
+        <div class="page active">
+            <h2 style="font-size:1.3rem;margin-bottom:0.8rem;">🛡️ 管理面板</h2>
+            <div class="admin-stats-grid">
+                <div class="stat-card"><span class="stat-number">${stats.users||0}</span><div class="stat-label">用户</div></div>
+                <div class="stat-card"><span class="stat-number">${stats.problems||0}</span><div class="stat-label">题目</div></div>
+                <div class="stat-card"><span class="stat-number">${stats.submissions||0}</span><div class="stat-label">提交</div></div>
+                <div class="stat-card"><span class="stat-number">${stats.openTickets||0}</span><div class="stat-label">工单</div></div>
+            </div>
+            <div class="card">
+                <div class="card-title">👥 用户</div>
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead><tr><th>UID</th><th>用户名</th><th>角色</th><th>已解决</th><th>操作</th></tr></thead>
+                        <tbody>
+                            ${users.map(u => {
+                                const nameHtml = getUsernameHtml(u);
+                                const roleMap = { admin: '管理员', cheater: '作弊者', user: '用户', banned: '已封禁' };
+                                return `
+                                <tr>
+                                    <td style="font-family:monospace;font-size:0.8rem;">${u.uid}</td>
+                                    <td>${nameHtml}</td>
+                                    <td>${roleMap[u.role]||'用户'}</td>
+                                    <td>${(u.solved||[]).length}</td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" onclick="showRoleModal('${u.id}','${u.username}')">🏷️ 改角色</button>
+                                        <button class="btn btn-danger btn-sm" onclick="showRevokeModal('${u.id}','${u.username}')">🔽 撤销</button>
+                                        ${u.role !== 'admin' && u.username !== 'Dan_Chao_Fan' ? `<button class="btn btn-danger btn-sm" onclick="banUser('${u.id}')">封禁</button>` : ''}
+                                    </td>
+                                </tr>
+                            `}).join('')}
+                        </tbody>
+                    </table>
                 </div>
-            `;
-        }
+            </div>
+        </div>
+    `;
+}
 
         async function banUser(id) {
             if (!confirm('确认封禁该用户？')) return;
