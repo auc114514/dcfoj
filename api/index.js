@@ -174,13 +174,9 @@ async function initDB() {
 }
 initDB();
 
-app.get('/api/health', async (req, res) => {
-    try {
-        await pool.query('SELECT 1');
-        res.json({ status: 'ok', database: 'connected', timestamp: new Date().toISOString() });
-    } catch (e) {
-        res.status(500).json({ status: 'error', database: 'disconnected', error: e.message });
-    }
+app.use(express.static('public'));
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.post('/api/auth/register', async (req, res) => {
