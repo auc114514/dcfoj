@@ -22,9 +22,9 @@ const B2_BUCKET = process.env.B2_BUCKET || 'dcf-oj-data';
 const B2_BASE = `https://f000.backblazeb2.com/file/${B2_BUCKET}`;
 
 // ========== 工具函数 ==========
-async function readFromB2(path) {
+async function readFromB2(filepath) {
     try {
-        const res = await fetch(`${B2_BASE}/${path}`);
+        const res = await fetch(`${B2_BASE}/${filepath}`);
         if (!res.ok) return null;
         return await res.text();
     } catch { return null; }
@@ -46,9 +46,11 @@ async function judge(code, lang, problemCode, timeLimit = 1000) {
 
     try {
         const configs = {
-            cpp: { ext: '.cpp', compile: (f) => `g++ -std=c++14 -O2 ${f} -o ${f}.out`, run: (f) => `./${f}.out`, needCompile: true },
+            cpp: { ext: '.cpp', compile: (f) => `g++ -std=c++14 -O2 ${f} -o ${f}.out`, run: (f) => `./${f}.out`,
+                needCompile: true },
             python: { ext: '.py', compile: null, run: (f) => `python3 ${f}`, needCompile: false },
-            java: { ext: '.java', compile: (f) => `javac ${f}`, run: (f) => `java -cp ${path.dirname(f)} Main`, needCompile: true }
+            java: { ext: '.java', compile: (f) => `javac ${f}`, run: (f) => `java -cp ${path.dirname(f)} Main`,
+                needCompile: true }
         };
 
         const cfg = configs[lang];
@@ -107,11 +109,11 @@ async function judge(code, lang, problemCode, timeLimit = 1000) {
 async function updateGuValue(userId) {
     const userRes = await pool.query('SELECT solved FROM users WHERE id = $1', [userId]);
     const solved = userRes.rows[0]?.solved || [];
-    
+
     let practice = 0;
-    const diffMap = { 'intro': 0.05, 'popular-minus': 0.1, 'popular': 0.2, 'popular-plus': 0.4, 
-                     'advanced': 0.5, 'advanced-plus': 0.6, 'provincial': 0.8, 'noi': 0.9, 'noi-plus': 1 };
-    
+    const diffMap = { 'intro': 0.05, 'popular-minus': 0.1, 'popular': 0.2, 'popular-plus': 0.4,
+        'advanced': 0.5, 'advanced-plus': 0.6, 'provincial': 0.8, 'noi': 0.9, 'noi-plus': 1 };
+
     if (solved.length > 0) {
         const problemRes = await pool.query('SELECT difficulty FROM problems WHERE code = ANY($1)', [solved]);
         for (const p of problemRes.rows) {
@@ -119,7 +121,7 @@ async function updateGuValue(userId) {
         }
         practice = Math.floor(practice);
     }
-    
+
     let credit = 100;
     let total = practice + credit;
     let color = 'gray';
@@ -127,7 +129,7 @@ async function updateGuValue(userId) {
     else if (total >= 160) color = 'orange';
     else if (total >= 120) color = 'green';
     else if (total >= 100) color = 'blue';
-    
+
     await pool.query(`
         INSERT INTO gu_values (user_id, practice, credit, total, color, updated_at)
         VALUES ($1, $2, $3, $4, $5, NOW())
@@ -136,119 +138,158 @@ async function updateGuValue(userId) {
     `, [userId, practice, credit, total, color]);
 }
 
-// ========== 数据库初始化 ==========
+// ========== 初始化数据库 ==========
 async function initDB() {
     try {
-        await pool.query(`CREATE TABLE IF NOT EXISTS users (
-            id VARCHAR(50) PRIMARY KEY,
-            username VARCHAR(50) UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            role VARCHAR(20) DEFAULT 'user',
-            solved TEXT[] DEFAULT '{}',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );`);
-        await pool.query(`CREATE TABLE IF NOT EXISTS problems (
-            code VARCHAR(20) PRIMARY KEY,
-            type VARCHAR(20) DEFAULT 'problem',
-            difficulty VARCHAR(20) DEFAULT 'unrated',
-            title TEXT,
-            time_limit INT DEFAULT 1000,
-            memory_limit INT DEFAULT 128,
-            tags TEXT[],
-            description TEXT,
-            test_cases JSONB,
-            templates JSONB,
-            data_path VARCHAR(100),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );`);
-        await pool.query(`CREATE TABLE IF NOT EXISTS submissions (
-            id VARCHAR(50) PRIMARY KEY,
-            username VARCHAR(50),
-            user_id VARCHAR(50),
-            problem_code VARCHAR(20),
-            code TEXT,
-            lang VARCHAR(20),
-            status VARCHAR(20),
-            time INT,
-            memory INT,
-            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );`);
-        await pool.query(`CREATE TABLE IF NOT EXISTS tweets (
-            id SERIAL PRIMARY KEY,
-            user_id VARCHAR(50) REFERENCES users(id),
-            content TEXT,
-            code TEXT,
-            lang VARCHAR(20),
-            reply_to_id INT REFERENCES tweets(id),
-            is_deleted BOOLEAN DEFAULT false,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );`);
-        await pool.query(`CREATE TABLE IF NOT EXISTS reports (
-            id SERIAL PRIMARY KEY,
-            reporter_id VARCHAR(50) REFERENCES users(id),
-            target_type VARCHAR(20),
-            target_id INT,
-            reason TEXT,
-            status VARCHAR(20) DEFAULT 'pending',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );`);
-        await pool.query(`CREATE TABLE IF NOT EXISTS teams (
-            id SERIAL PRIMARY KEY,
-            name VARCHAR(100) NOT NULL,
-            description TEXT,
-            owner_id VARCHAR(50) REFERENCES users(id),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );`);
-        await pool.query(`CREATE TABLE IF NOT EXISTS team_members (
-            team_id INT REFERENCES teams(id) ON DELETE CASCADE,
-            user_id VARCHAR(50) REFERENCES users(id) ON DELETE CASCADE,
-            role VARCHAR(20) DEFAULT 'member',
-            joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (team_id, user_id)
-        );`);
-        await pool.query(`CREATE TABLE IF NOT EXISTS gu_values (
-            user_id VARCHAR(50) PRIMARY KEY REFERENCES users(id),
-            practice DECIMAL DEFAULT 0,
-            credit DECIMAL DEFAULT 100,
-            contribution DECIMAL DEFAULT 0,
-            competition DECIMAL DEFAULT 0,
-            total DECIMAL DEFAULT 0,
-            color VARCHAR(20) DEFAULT 'gray',
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );`);
-        await pool.query(`CREATE TABLE IF NOT EXISTS tickets (
-            id SERIAL PRIMARY KEY,
-            user_id VARCHAR(50) REFERENCES users(id),
-            title VARCHAR(200),
-            content TEXT,
-            status VARCHAR(20) DEFAULT 'open',
-            admin_reply TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );`);
-        await pool.query(`CREATE TABLE IF NOT EXISTS contests (
-            id SERIAL PRIMARY KEY,
-            title VARCHAR(200),
-            description TEXT,
-            is_rated BOOLEAN DEFAULT false,
-            start_time TIMESTAMP,
-            end_time TIMESTAMP,
-            created_by VARCHAR(50) REFERENCES users(id),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );`);
-        await pool.query(`CREATE TABLE IF NOT EXISTS versions (
-            id SERIAL PRIMARY KEY,
-            version VARCHAR(20) NOT NULL,
-            title VARCHAR(200),
-            content TEXT,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );`);
-        
-        // 初始化版本数据
-        await pool.query(`INSERT INTO versions (version, title, content) VALUES 
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS users (
+                id VARCHAR(50) PRIMARY KEY,
+                username VARCHAR(50) UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                role VARCHAR(20) DEFAULT 'user',
+                solved TEXT[] DEFAULT '{}',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS problems (
+                code VARCHAR(20) PRIMARY KEY,
+                type VARCHAR(20) DEFAULT 'problem',
+                difficulty VARCHAR(20) DEFAULT 'unrated',
+                title TEXT,
+                time_limit INT DEFAULT 1000,
+                memory_limit INT DEFAULT 128,
+                tags TEXT[],
+                description TEXT,
+                test_cases JSONB,
+                templates JSONB,
+                data_path VARCHAR(100),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS submissions (
+                id VARCHAR(50) PRIMARY KEY,
+                username VARCHAR(50),
+                user_id VARCHAR(50),
+                problem_code VARCHAR(20),
+                code TEXT,
+                lang VARCHAR(20),
+                status VARCHAR(20),
+                time INT,
+                memory INT,
+                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS tweets (
+                id SERIAL PRIMARY KEY,
+                user_id VARCHAR(50) REFERENCES users(id),
+                content TEXT,
+                code TEXT,
+                lang VARCHAR(20),
+                reply_to_id INT REFERENCES tweets(id),
+                is_deleted BOOLEAN DEFAULT false,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS reports (
+                id SERIAL PRIMARY KEY,
+                reporter_id VARCHAR(50) REFERENCES users(id),
+                target_type VARCHAR(20),
+                target_id INT,
+                reason TEXT,
+                status VARCHAR(20) DEFAULT 'pending',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS teams (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(100) NOT NULL,
+                description TEXT,
+                owner_id VARCHAR(50) REFERENCES users(id),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS team_members (
+                team_id INT REFERENCES teams(id) ON DELETE CASCADE,
+                user_id VARCHAR(50) REFERENCES users(id) ON DELETE CASCADE,
+                role VARCHAR(20) DEFAULT 'member',
+                joined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (team_id, user_id)
+            );
+        `);
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS gu_values (
+                user_id VARCHAR(50) PRIMARY KEY REFERENCES users(id),
+                practice DECIMAL DEFAULT 0,
+                credit DECIMAL DEFAULT 100,
+                contribution DECIMAL DEFAULT 0,
+                competition DECIMAL DEFAULT 0,
+                total DECIMAL DEFAULT 0,
+                color VARCHAR(20) DEFAULT 'gray',
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS tickets (
+                id VARCHAR(8) PRIMARY KEY DEFAULT substr(md5(random()::text), 1, 8),
+                user_id VARCHAR(50) REFERENCES users(id),
+                title VARCHAR(200),
+                content TEXT,
+                status VARCHAR(20) DEFAULT 'open',
+                admin_reply TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS contests (
+                id SERIAL PRIMARY KEY,
+                title VARCHAR(200),
+                description TEXT,
+                is_rated BOOLEAN DEFAULT false,
+                start_time TIMESTAMP,
+                end_time TIMESTAMP,
+                created_by VARCHAR(50) REFERENCES users(id),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS versions (
+                id SERIAL PRIMARY KEY,
+                version VARCHAR(20) NOT NULL,
+                title VARCHAR(200),
+                content TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS admin_logs (
+                id SERIAL PRIMARY KEY,
+                admin_id VARCHAR(50) REFERENCES users(id),
+                admin_name VARCHAR(50),
+                action VARCHAR(50),
+                target_type VARCHAR(20),
+                target_id VARCHAR(50),
+                target_name VARCHAR(50),
+                changes JSONB,
+                reason TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
+        await pool.query(`
+            INSERT INTO versions (version, title, content) VALUES
             ('v1.0.0', '初始版本', 'DCF OJ 初始发布，支持基础判题'),
-            ('v1.1.0', '大更新', '修复登录/注册，增加犇犇、用户主页、团队系统、咕值系统、工单系统、管理员面板')
-        ON CONFLICT DO NOTHING;`);
+            ('v1.1.0', '大更新', '修复登录/注册，增加犇犇、用户主页、团队系统、咕值系统、工单系统、管理员面板'),
+            ('v1.1.1', '陶片放逐', '增加管理员操作日志，工单ID随机8位，所有页面统一路由'),
+            ('v1.1.2', '用户名颜色', '用户主页、用户名颜色（灰/蓝/绿/橙/红/紫/棕/管理员紫），管理员可修改用户角色')
+            ON CONFLICT DO NOTHING;
+        `);
 
         const admin = await pool.query("SELECT * FROM users WHERE username = 'Dan_Chao_Fan'");
         if (admin.rows.length === 0) {
@@ -310,7 +351,7 @@ app.post('/api/auth/register', async (req, res) => {
             `INSERT INTO users (id, username, password, role) VALUES ($1, $2, $3, $4)`,
             [userId, username, hashed, 'user']
         );
-        
+
         await pool.query(
             `INSERT INTO gu_values (user_id, credit, total) VALUES ($1, 100, 100)`,
             [userId]
@@ -347,17 +388,153 @@ app.get('/api/auth/verify', async (req, res) => {
         if (result.rows.length === 0) return res.status(401).json({ error: '用户不存在' });
         const user = result.rows[0];
         const gu = await pool.query('SELECT * FROM gu_values WHERE user_id = $1', [user.id]);
-        res.json({ 
-            user: { 
-                id: user.id, 
-                username: user.username, 
-                role: user.role, 
+        res.json({
+            user: {
+                id: user.id,
+                username: user.username,
+                role: user.role,
                 solved: user.solved || [],
                 gu: gu.rows[0] || { total: 100, color: 'gray' }
-            } 
+            }
         });
     } catch { res.status(401).json({ error: 'token无效' }); }
 });
+
+// ===== 用户（含角色修改） =====
+app.get('/api/users', async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ error: '未授权' });
+    try {
+        const decoded = jwt.verify(token, 'dcf_secret');
+        if (decoded.role !== 'admin') return res.status(403).json({ error: '需要管理员权限' });
+    } catch { return res.status(401).json({ error: 'token无效' }); }
+
+    try {
+        const result = await pool.query('SELECT id, username, role, solved, created_at FROM users ORDER BY created_at DESC');
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: '服务器错误' });
+    }
+});
+
+app.get('/api/users/:username', async (req, res) => {
+    try {
+        const userRes = await pool.query('SELECT id, username, role, solved, created_at FROM users WHERE username = $1', [
+            req.params.username
+        ]);
+        if (userRes.rows.length === 0) return res.status(404).json({ error: '用户不存在' });
+        const user = userRes.rows[0];
+        const gu = await pool.query('SELECT * FROM gu_values WHERE user_id = $1', [user.id]);
+        const subs = await pool.query('SELECT COUNT(*) FROM submissions WHERE user_id = $1', [user.id]);
+        const ac = await pool.query('SELECT COUNT(*) FROM submissions WHERE user_id = $1 AND status = $2', [user.id,
+            'AC'
+        ]);
+
+        res.json({
+            ...user,
+            gu: gu.rows[0] || { total: 100, color: 'gray' },
+            totalSubmissions: parseInt(subs.rows[0].count),
+            acSubmissions: parseInt(ac.rows[0].count)
+        });
+    } catch (err) {
+        res.status(500).json({ error: '服务器错误' });
+    }
+});
+
+app.get('/api/users/:username/teams', async (req, res) => {
+    try {
+        const userRes = await pool.query('SELECT id FROM users WHERE username = $1', [req.params.username]);
+        if (userRes.rows.length === 0) return res.status(404).json({ error: '用户不存在' });
+        const result = await pool.query(`
+            SELECT t.* FROM teams t
+            JOIN team_members tm ON t.id = tm.team_id
+            WHERE tm.user_id = $1
+        `, [userRes.rows[0].id]);
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: '服务器错误' });
+    }
+});
+
+// ===== 修改用户角色（管理员） =====
+app.put('/api/admin/users/:id/role', async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ error: '未授权' });
+    try {
+        const decoded = jwt.verify(token, 'dcf_secret');
+        if (decoded.role !== 'admin') return res.status(403).json({ error: '需要管理员权限' });
+    } catch { return res.status(401).json({ error: 'token无效' }); }
+
+    const { role, reason } = req.body;
+    if (!role || !['user', 'admin', 'cheater'].includes(role)) {
+        return res.status(400).json({ error: '无效的角色' });
+    }
+
+    try {
+        const userCheck = await pool.query('SELECT username FROM users WHERE id = $1', [req.params.id]);
+        if (userCheck.rows.length === 0) return res.status(404).json({ error: '用户不存在' });
+
+        // 不能修改 Dan_Chao_Fan 的权限
+        if (userCheck.rows[0].username === 'Dan_Chao_Fan') {
+            return res.status(400).json({ error: '不能修改超级管理员的权限' });
+        }
+
+        await pool.query('UPDATE users SET role = $1 WHERE id = $2', [role, req.params.id]);
+
+        // 如果是作弊者，扣咕值
+        if (role === 'cheater') {
+            const gu = await pool.query('SELECT total FROM gu_values WHERE user_id = $1', [req.params.id]);
+            const newTotal = Math.max(0, (gu.rows[0]?.total || 100) - 52);
+            await pool.query('UPDATE gu_values SET total = $1 WHERE user_id = $2', [newTotal, req.params.id]);
+        }
+
+        // 记录陶片放逐
+        await pool.query(
+            `INSERT INTO admin_logs (admin_id, admin_name, action, target_type, target_id, target_name, changes, reason)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+            [decoded.id, decoded.username, '修改用户角色', 'user', req.params.id, userCheck.rows[0].username,
+                JSON.stringify({ new_role: role }), reason || '管理员修改角色'
+            ]
+        );
+
+        res.json({ success: true, username: userCheck.rows[0].username, role });
+    } catch (err) {
+        res.status(500).json({ error: '服务器错误' });
+    }
+});
+
+app.put('/api/admin/users/:id/ban', async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ error: '未授权' });
+    try {
+        const decoded = jwt.verify(token, 'dcf_secret');
+        if (decoded.role !== 'admin') return res.status(403).json({ error: '需要管理员权限' });
+    } catch { return res.status(401).json({ error: 'token无效' }); }
+
+    try {
+        const userCheck = await pool.query('SELECT username FROM users WHERE id = $1', [req.params.id]);
+        if (userCheck.rows.length === 0) return res.status(404).json({ error: '用户不存在' });
+        if (userCheck.rows[0].username === 'Dan_Chao_Fan') {
+            return res.status(400).json({ error: '不能封禁超级管理员' });
+        }
+
+        await pool.query('UPDATE users SET role = $1 WHERE id = $2', ['banned', req.params.id]);
+        await pool.query('UPDATE gu_values SET credit = 0, total = 0 WHERE user_id = $1', [req.params.id]);
+
+        await pool.query(
+            `INSERT INTO admin_logs (admin_id, admin_name, action, target_type, target_id, target_name, changes, reason)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+            [decoded.id, decoded.username, '封禁用户', 'user', req.params.id, userCheck.rows[0].username,
+                JSON.stringify({ role: 'banned' }), '管理员封禁'
+            ]
+        );
+
+        res.json({ message: '用户已封禁' });
+    } catch (err) {
+        res.status(500).json({ error: '服务器错误' });
+    }
+});
+
 // ===== 题目 =====
 app.get('/api/problems', async (req, res) => {
     try {
@@ -399,7 +576,8 @@ app.post('/api/problems', async (req, res) => {
         if (decoded.role !== 'admin') return res.status(403).json({ error: '需要管理员权限' });
     } catch { return res.status(401).json({ error: 'token无效' }); }
 
-    const { code, type, difficulty, title, timeLimit, memoryLimit, tags, description, testCases, templates, dataPath } = req.body;
+    const { code, type, difficulty, title, timeLimit, memoryLimit, tags, description, testCases, templates, dataPath } = req
+        .body;
     if (!code || !title || !description) return res.status(400).json({ error: '缺少必要字段' });
 
     try {
@@ -407,11 +585,39 @@ app.post('/api/problems', async (req, res) => {
             `INSERT INTO problems (code, type, difficulty, title, time_limit, memory_limit, tags, description, test_cases, templates, data_path)
              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
             [code, type || 'problem', difficulty || 'unrated', title, timeLimit || 1000, memoryLimit || 128,
-             tags || [], description, testCases || [], templates || {}, dataPath || code]
+                tags || [], description, testCases || [], templates || {}, dataPath || code
+            ]
         );
         res.status(201).json({ code, title });
     } catch (err) {
         if (err.code === '23505') return res.status(400).json({ error: '题目编号已存在' });
+        res.status(500).json({ error: '服务器错误' });
+    }
+});
+
+app.put('/api/problems/:code', async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ error: '未授权' });
+    try {
+        const decoded = jwt.verify(token, 'dcf_secret');
+        if (decoded.role !== 'admin') return res.status(403).json({ error: '需要管理员权限' });
+    } catch { return res.status(401).json({ error: 'token无效' }); }
+
+    const { title, difficulty, type, timeLimit, memoryLimit, tags, description, testCases, dataPath } = req.body;
+    if (!title) return res.status(400).json({ error: '标题不能为空' });
+
+    try {
+        await pool.query(
+            `UPDATE problems SET
+                title = $1, difficulty = $2, type = $3, time_limit = $4, memory_limit = $5,
+                tags = $6, description = $7, test_cases = $8, data_path = $9
+             WHERE code = $10`,
+            [title, difficulty || 'unrated', type || 'problem', timeLimit || 1000, memoryLimit || 128,
+                tags || [], description, testCases || [], dataPath || req.params.code, req.params.code
+            ]
+        );
+        res.json({ message: '更新成功' });
+    } catch (err) {
         res.status(500).json({ error: '服务器错误' });
     }
 });
@@ -449,7 +655,9 @@ app.post('/api/submissions', async (req, res) => {
 
     const subId = 'sub_' + Date.now();
     try {
-        const problemRes = await pool.query('SELECT time_limit, data_path, difficulty FROM problems WHERE code = $1', [problemCode]);
+        const problemRes = await pool.query('SELECT time_limit, data_path, difficulty FROM problems WHERE code = $1', [
+            problemCode
+        ]);
         const problem = problemRes.rows[0];
         if (!problem) return res.status(404).json({ error: '题目不存在' });
 
@@ -492,9 +700,12 @@ app.get('/api/submissions', async (req, res) => {
     const { username, problemCode, status } = req.query;
     let sql = 'SELECT * FROM submissions WHERE 1=1';
     const params = [];
-    if (username) { params.push(username); sql += ` AND username = $${params.length}`; }
-    if (problemCode) { params.push(problemCode); sql += ` AND problem_code = $${params.length}`; }
-    if (status) { params.push(status); sql += ` AND status = $${params.length}`; }
+    if (username) { params.push(username);
+        sql += ` AND username = $${params.length}`; }
+    if (problemCode) { params.push(problemCode);
+        sql += ` AND problem_code = $${params.length}`; }
+    if (status) { params.push(status);
+        sql += ` AND status = $${params.length}`; }
     sql += ' ORDER BY timestamp DESC LIMIT 200';
     try {
         const result = await pool.query(sql, params);
@@ -508,11 +719,11 @@ app.get('/api/submissions', async (req, res) => {
 app.get('/api/tweets', async (req, res) => {
     try {
         const result = await pool.query(`
-            SELECT t.*, u.username 
-            FROM tweets t 
-            JOIN users u ON t.user_id = u.id 
-            WHERE t.is_deleted = false 
-            ORDER BY t.created_at DESC 
+            SELECT t.*, u.username
+            FROM tweets t
+            JOIN users u ON t.user_id = u.id
+            WHERE t.is_deleted = false
+            ORDER BY t.created_at DESC
             LIMIT 50
         `);
         res.json(result.rows);
@@ -525,10 +736,10 @@ app.post('/api/tweets', async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ error: '请先登录' });
     const decoded = jwt.verify(token, 'dcf_secret');
-    
+
     const { content, code, lang } = req.body;
     if (!content && !code) return res.status(400).json({ error: '内容不能为空' });
-    
+
     try {
         await pool.query(
             `INSERT INTO tweets (user_id, content, code, lang) VALUES ($1, $2, $3, $4)`,
@@ -546,7 +757,7 @@ app.post('/api/tweets/:id/reply', async (req, res) => {
     const decoded = jwt.verify(token, 'dcf_secret');
     const { content } = req.body;
     if (!content) return res.status(400).json({ error: '回复内容不能为空' });
-    
+
     try {
         await pool.query(
             `INSERT INTO tweets (user_id, content, reply_to_id) VALUES ($1, $2, $3)`,
@@ -564,7 +775,7 @@ app.post('/api/tweets/:id/report', async (req, res) => {
     const decoded = jwt.verify(token, 'dcf_secret');
     const { reason } = req.body;
     if (!reason) return res.status(400).json({ error: '请填写举报原因' });
-    
+
     try {
         await pool.query(
             `INSERT INTO reports (reporter_id, target_type, target_id, reason) VALUES ($1, $2, $3, $4)`,
@@ -576,50 +787,14 @@ app.post('/api/tweets/:id/report', async (req, res) => {
     }
 });
 
-// ===== 用户主页 =====
-app.get('/api/users/:username', async (req, res) => {
-    try {
-        const userRes = await pool.query('SELECT id, username, role, solved, created_at FROM users WHERE username = $1', [req.params.username]);
-        if (userRes.rows.length === 0) return res.status(404).json({ error: '用户不存在' });
-        const user = userRes.rows[0];
-        const gu = await pool.query('SELECT * FROM gu_values WHERE user_id = $1', [user.id]);
-        const subs = await pool.query('SELECT COUNT(*) FROM submissions WHERE user_id = $1', [user.id]);
-        const ac = await pool.query('SELECT COUNT(*) FROM submissions WHERE user_id = $1 AND status = $2', [user.id, 'AC']);
-        
-        res.json({
-            ...user,
-            gu: gu.rows[0] || { total: 100, color: 'gray' },
-            totalSubmissions: parseInt(subs.rows[0].count),
-            acSubmissions: parseInt(ac.rows[0].count)
-        });
-    } catch (err) {
-        res.status(500).json({ error: '服务器错误' });
-    }
-});
-
-app.get('/api/users/:username/teams', async (req, res) => {
-    try {
-        const userRes = await pool.query('SELECT id FROM users WHERE username = $1', [req.params.username]);
-        if (userRes.rows.length === 0) return res.status(404).json({ error: '用户不存在' });
-        const result = await pool.query(`
-            SELECT t.* FROM teams t 
-            JOIN team_members tm ON t.id = tm.team_id 
-            WHERE tm.user_id = $1
-        `, [userRes.rows[0].id]);
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ error: '服务器错误' });
-    }
-});
-
 // ===== 团队 =====
 app.get('/api/teams', async (req, res) => {
     try {
         const result = await pool.query(`
-            SELECT t.*, COUNT(tm.user_id) as member_count 
-            FROM teams t 
-            LEFT JOIN team_members tm ON t.id = tm.team_id 
-            GROUP BY t.id 
+            SELECT t.*, COUNT(tm.user_id) as member_count
+            FROM teams t
+            LEFT JOIN team_members tm ON t.id = tm.team_id
+            GROUP BY t.id
             ORDER BY t.created_at DESC
         `);
         res.json(result.rows);
@@ -632,10 +807,10 @@ app.post('/api/teams', async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ error: '请先登录' });
     const decoded = jwt.verify(token, 'dcf_secret');
-    
+
     const { name, description } = req.body;
     if (!name) return res.status(400).json({ error: '团队名称不能为空' });
-    
+
     try {
         const result = await pool.query(
             `INSERT INTO teams (name, description, owner_id) VALUES ($1, $2, $3) RETURNING id`,
@@ -656,9 +831,9 @@ app.get('/api/teams/:id', async (req, res) => {
         const teamRes = await pool.query('SELECT * FROM teams WHERE id = $1', [req.params.id]);
         if (teamRes.rows.length === 0) return res.status(404).json({ error: '团队不存在' });
         const members = await pool.query(`
-            SELECT u.username, u.id, tm.role 
-            FROM team_members tm 
-            JOIN users u ON tm.user_id = u.id 
+            SELECT u.username, u.id, tm.role
+            FROM team_members tm
+            JOIN users u ON tm.user_id = u.id
             WHERE tm.team_id = $1
         `, [req.params.id]);
         res.json({ ...teamRes.rows[0], members: members.rows });
@@ -671,7 +846,7 @@ app.post('/api/teams/:id/join', async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ error: '请先登录' });
     const decoded = jwt.verify(token, 'dcf_secret');
-    
+
     try {
         await pool.query(
             `INSERT INTO team_members (team_id, user_id) VALUES ($1, $2)`,
@@ -689,7 +864,7 @@ app.get('/api/tickets', async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ error: '请先登录' });
     const decoded = jwt.verify(token, 'dcf_secret');
-    
+
     try {
         let result;
         if (decoded.role === 'admin') {
@@ -709,13 +884,13 @@ app.post('/api/tickets', async (req, res) => {
     const decoded = jwt.verify(token, 'dcf_secret');
     const { title, content } = req.body;
     if (!title || !content) return res.status(400).json({ error: '请填写完整信息' });
-    
+
     try {
-        await pool.query(
-            `INSERT INTO tickets (user_id, title, content) VALUES ($1, $2, $3)`,
+        const result = await pool.query(
+            `INSERT INTO tickets (user_id, title, content) VALUES ($1, $2, $3) RETURNING id`,
             [decoded.id, title, content]
         );
-        res.status(201).json({ message: '工单提交成功' });
+        res.status(201).json({ id: result.rows[0].id, message: '工单提交成功' });
     } catch (err) {
         res.status(500).json({ error: '服务器错误' });
     }
@@ -726,7 +901,7 @@ app.put('/api/tickets/:id', async (req, res) => {
     if (!token) return res.status(401).json({ error: '请先登录' });
     const decoded = jwt.verify(token, 'dcf_secret');
     if (decoded.role !== 'admin') return res.status(403).json({ error: '需要管理员权限' });
-    
+
     const { admin_reply, status } = req.body;
     try {
         await pool.query(
@@ -739,13 +914,47 @@ app.put('/api/tickets/:id', async (req, res) => {
     }
 });
 
-// ===== 管理员 =====
+// ===== 管理员操作日志（陶片放逐） =====
+app.post('/api/admin/log', async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ error: '未授权' });
+    const decoded = jwt.verify(token, 'dcf_secret');
+    if (decoded.role !== 'admin') return res.status(403).json({ error: '需要管理员权限' });
+
+    const { action, target_type, target_id, target_name, changes, reason } = req.body;
+    try {
+        await pool.query(
+            `INSERT INTO admin_logs (admin_id, admin_name, action, target_type, target_id, target_name, changes, reason)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+            [decoded.id, decoded.username, action, target_type, target_id, target_name, changes || {}, reason || '']
+        );
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ error: '服务器错误' });
+    }
+});
+
+app.get('/api/admin/logs', async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) return res.status(401).json({ error: '未授权' });
+    const decoded = jwt.verify(token, 'dcf_secret');
+    if (decoded.role !== 'admin') return res.status(403).json({ error: '需要管理员权限' });
+
+    try {
+        const result = await pool.query('SELECT * FROM admin_logs ORDER BY created_at DESC LIMIT 200');
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: '服务器错误' });
+    }
+});
+
+// ===== 管理员统计 =====
 app.get('/api/admin/stats', async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) return res.status(401).json({ error: '请先登录' });
     const decoded = jwt.verify(token, 'dcf_secret');
     if (decoded.role !== 'admin') return res.status(403).json({ error: '需要管理员权限' });
-    
+
     try {
         const users = await pool.query('SELECT COUNT(*) FROM users');
         const problems = await pool.query('SELECT COUNT(*) FROM problems');
@@ -757,35 +966,6 @@ app.get('/api/admin/stats', async (req, res) => {
             submissions: parseInt(submissions.rows[0].count),
             openTickets: parseInt(tickets.rows[0].count)
         });
-    } catch (err) {
-        res.status(500).json({ error: '服务器错误' });
-    }
-});
-
-app.get('/api/admin/users', async (req, res) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) return res.status(401).json({ error: '请先登录' });
-    const decoded = jwt.verify(token, 'dcf_secret');
-    if (decoded.role !== 'admin') return res.status(403).json({ error: '需要管理员权限' });
-    
-    try {
-        const result = await pool.query('SELECT id, username, role, solved, created_at FROM users ORDER BY created_at DESC');
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ error: '服务器错误' });
-    }
-});
-
-app.put('/api/admin/users/:id/ban', async (req, res) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) return res.status(401).json({ error: '请先登录' });
-    const decoded = jwt.verify(token, 'dcf_secret');
-    if (decoded.role !== 'admin') return res.status(403).json({ error: '需要管理员权限' });
-    
-    try {
-        await pool.query('UPDATE users SET role = $1 WHERE id = $2', ['banned', req.params.id]);
-        await pool.query('UPDATE gu_values SET credit = 0, total = 0 WHERE user_id = $1', [req.params.id]);
-        res.json({ message: '用户已封禁' });
     } catch (err) {
         res.status(500).json({ error: '服务器错误' });
     }
@@ -806,10 +986,10 @@ app.post('/api/contests', async (req, res) => {
     if (!token) return res.status(401).json({ error: '请先登录' });
     const decoded = jwt.verify(token, 'dcf_secret');
     if (decoded.role !== 'admin') return res.status(403).json({ error: '需要管理员权限' });
-    
+
     const { title, description, is_rated, start_time, end_time } = req.body;
     if (!title) return res.status(400).json({ error: '标题不能为空' });
-    
+
     try {
         await pool.query(
             `INSERT INTO contests (title, description, is_rated, start_time, end_time, created_by)
@@ -822,10 +1002,12 @@ app.post('/api/contests', async (req, res) => {
     }
 });
 
-// ===== 启动 =====
+// ============================================================
+// 启动
+// ============================================================
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`🚀 DCF OJ v1.1.0 运行在端口 ${PORT}`);
+    console.log(`🚀 DCF OJ v1.1.2 运行在端口 ${PORT}`);
 });
 
 module.exports = app;
