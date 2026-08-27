@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dan_Chao_Fan OJ - 在线判题</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dan_Chao_Fan OJ - v1.1.0</title>
     <style>
+        /* ===== 全局 ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
             background: #0f172a;
@@ -19,35 +19,51 @@
             display: flex;
             flex-direction: column;
         }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #38bdf8;
+        }
 
         /* ===== 导航 ===== */
         .navbar {
             background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid #334155;
-            padding: 0 2rem;
+            padding: 0 1.5rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 64px;
+            height: 60px;
             flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
         .nav-brand {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 800;
             color: #38bdf8;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
         .nav-brand::before {
             content: '⚡';
-            font-size: 1.8rem;
         }
         .nav-links {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.2rem;
             list-style: none;
             flex-wrap: wrap;
         }
@@ -55,9 +71,9 @@
             color: #94a3b8;
             text-decoration: none;
             font-weight: 500;
-            padding: 0.4rem 1rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
+            padding: 0.3rem 0.7rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
             cursor: pointer;
             transition: all 0.3s;
         }
@@ -69,23 +85,53 @@
         .version-badge {
             background: linear-gradient(135deg, #38bdf8, #818cf8);
             color: white;
-            padding: 0.2rem 0.7rem;
-            border-radius: 20px;
-            font-size: 0.7rem;
+            padding: 0.1rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.6rem;
             font-weight: 700;
         }
         .user-section {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.4rem;
             flex-wrap: wrap;
+        }
+        .gu-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.1rem 0.4rem;
+            border-radius: 10px;
+        }
+        .gu-gray {
+            background: #64748b;
+            color: white;
+        }
+        .gu-blue {
+            background: #3b82f6;
+            color: white;
+        }
+        .gu-green {
+            background: #22c55e;
+            color: white;
+        }
+        .gu-orange {
+            background: #f97316;
+            color: white;
+        }
+        .gu-red {
+            background: #ef4444;
+            color: white;
+        }
+        .gu-purple {
+            background: #8b5cf6;
+            color: white;
         }
 
         .btn {
-            padding: 0.5rem 1.2rem;
+            padding: 0.3rem 0.8rem;
             border: none;
-            border-radius: 8px;
-            font-size: 0.85rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -106,189 +152,37 @@
         .btn-secondary:hover {
             background: #334155;
         }
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        .btn-success {
+            background: #22c55e;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #16a34a;
+        }
+        .btn-sm {
+            padding: 0.15rem 0.5rem;
+            font-size: 0.7rem;
+        }
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+        }
 
-        /* ===== 主容器 ===== */
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 1rem;
             flex: 1;
-        }
-
-        /* ===== 首页 ===== */
-        .hero {
-            text-align: center;
-            padding: 4rem 2rem;
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(129, 140, 248, 0.08));
-            border-radius: 24px;
-            border: 1px solid rgba(56, 189, 248, 0.15);
-            margin-bottom: 3rem;
-        }
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #38bdf8, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .hero p {
-            color: #94a3b8;
-            font-size: 1.2rem;
-            max-width: 600px;
-            margin: 0 auto 1.5rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-        .stat-card {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 16px;
-            padding: 1.5rem;
-            text-align: center;
-            transition: transform 0.3s;
-        }
-        .stat-card:hover {
-            transform: translateY(-4px);
-        }
-        .stat-number {
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: #38bdf8;
-            display: block;
-        }
-        .stat-label {
-            color: #94a3b8;
-            margin-top: 0.3rem;
-            font-size: 0.9rem;
-        }
-
-        .notice {
-            background: linear-gradient(135deg, rgba(251, 191, 36, 0.08), rgba(251, 191, 36, 0.02));
-            border: 1px solid rgba(251, 191, 36, 0.2);
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .notice-title {
-            color: #fbbf24;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            color: #64748b;
-            border-top: 1px solid #334155;
-            font-size: 0.85rem;
-        }
-
-        /* ===== 题库 ===== */
-        .problem-table {
             width: 100%;
-            border-collapse: collapse;
-            background: #1e293b;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #334155;
-        }
-        .problem-table th,
-        .problem-table td {
-            padding: 0.8rem 1.2rem;
-            text-align: left;
-            border-bottom: 1px solid #334155;
-        }
-        .problem-table th {
-            background: rgba(56, 189, 248, 0.06);
-            color: #38bdf8;
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-        }
-        .problem-table tr:hover {
-            background: rgba(56, 189, 248, 0.04);
-        }
-        .problem-table tr:last-child td {
-            border-bottom: none;
         }
 
-        .tag {
-            display: inline-block;
-            padding: 0.1rem 0.5rem;
-            background: rgba(56, 189, 248, 0.12);
-            color: #38bdf8;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            margin-right: 0.3rem;
-        }
-        .diff {
-            display: inline-block;
-            padding: 0.1rem 0.6rem;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 700;
-        }
-        .diff-easy {
-            background: rgba(74, 222, 128, 0.2);
-            color: #4ade80;
-        }
-        .diff-medium {
-            background: rgba(251, 191, 36, 0.2);
-            color: #fbbf24;
-        }
-        .diff-hard {
-            background: rgba(248, 113, 113, 0.2);
-            color: #f87171;
-        }
-
-        .status-solved {
-            color: #4ade80;
-            font-weight: 700;
-        }
-        .status-unsolved {
-            color: #64748b;
-        }
-
-        .filters {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-        .filters input,
-        .filters select {
-            padding: 0.6rem 1rem;
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            color: #f1f5f9;
-            outline: none;
-            font-size: 0.9rem;
-        }
-        .filters input {
-            flex: 1;
-            min-width: 180px;
-        }
-        .filters select {
-            min-width: 120px;
-            cursor: pointer;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: #64748b;
-        }
-
-        /* ===== 页面切换 ===== */
         .page {
             display: none;
             animation: fadeIn 0.3s ease;
@@ -307,33 +201,170 @@
             }
         }
 
-        /* ===== 响应式 ===== */
-        @media (max-width: 768px) {
-            .navbar {
-                padding: 0.5rem 1rem;
-                height: auto;
-                gap: 0.5rem;
-            }
-            .nav-links a {
-                padding: 0.3rem 0.6rem;
-                font-size: 0.8rem;
-            }
-            .hero h1 {
-                font-size: 2rem;
-            }
-            .hero {
-                padding: 2rem 1rem;
-            }
-            .container {
-                padding: 1rem;
-            }
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 0.8rem;
+        }
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 2.5rem 1.5rem;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(129, 140, 248, 0.08));
+            border-radius: 16px;
+            border: 1px solid rgba(56, 189, 248, 0.15);
+            margin-bottom: 1.5rem;
+        }
+        .hero h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            color: #94a3b8;
+            font-size: 1rem;
+            margin: 0.3rem 0 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+        .stat-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #38bdf8;
+            display: block;
+        }
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.75rem;
+        }
+
+        .notice {
+            background: rgba(251, 191, 36, 0.08);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            border-radius: 10px;
+            padding: 0.8rem 1.2rem;
+            margin-bottom: 1.2rem;
+        }
+        .notice-title {
+            color: #fbbf24;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* ===== 表格 ===== */
+        .table-wrap {
+            overflow-x: auto;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #1e293b;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #334155;
+            font-size: 0.85rem;
+        }
+        .table th,
+        .table td {
+            padding: 0.5rem 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+        .table th {
+            background: rgba(56, 189, 248, 0.06);
+            color: #38bdf8;
+            font-weight: 600;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+        .table tr:hover {
+            background: rgba(56, 189, 248, 0.04);
+        }
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+        .table .clickable {
+            cursor: pointer;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.05rem 0.4rem;
+            background: rgba(56, 189, 248, 0.12);
+            color: #38bdf8;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            margin-right: 0.2rem;
+        }
+        .diff {
+            display: inline-block;
+            padding: 0.05rem 0.4rem;
+            border-radius: 8px;
+            font-size: 0.6rem;
+            font-weight: 700;
+        }
+        .diff-intro {
+            background: rgba(248, 113, 113, 0.2);
+            color: #f87171;
+        }
+        .diff-popular-minus {
+            background: rgba(251, 146, 60, 0.2);
+            color: #fb923c;
+        }
+        .diff-popular {
+            background: rgba(250, 204, 21, 0.2);
+            color: #facc15;
+        }
+        .diff-popular-plus {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+        }
+        .diff-advanced {
+            background: rgba(34, 211, 238, 0.2);
+            color: #22d3ee;
+        }
+        .diff-advanced-plus {
+            background: rgba(96, 165, 250, 0.2);
+            color: #60a5fa;
+        }
+        .diff-provincial {
+            background: rgba(167, 139, 250, 0.2);
+            color: #a78bfa;
+        }
+        .diff-noi {
+            background: rgba(156, 163, 175, 0.3);
+            color: #e5e7eb;
+        }
+        .diff-noi-plus {
+            background: rgba(244, 114, 182, 0.2);
+            color: #f472b6;
         }
 
         .type-badge {
             display: inline-block;
-            padding: 0.1rem 0.5rem;
+            padding: 0.05rem 0.35rem;
             border-radius: 4px;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             font-weight: 700;
             font-family: monospace;
         }
@@ -349,6 +380,7 @@
             background: rgba(251, 146, 60, 0.2);
             color: #fb923c;
         }
+
         .id-display {
             font-family: monospace;
             font-weight: 700;
@@ -362,62 +394,918 @@
         .id-user {
             color: #fb923c;
         }
+
+        .filters {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .filters input,
+        .filters select {
+            padding: 0.4rem 0.6rem;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: #f1f5f9;
+            outline: none;
+            font-size: 0.8rem;
+        }
+        .filters input {
+            flex: 1;
+            min-width: 120px;
+        }
+        .filters select {
+            min-width: 80px;
+            cursor: pointer;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 1rem;
+            color: #64748b;
+            border-top: 1px solid #334155;
+            font-size: 0.75rem;
+        }
+
+        /* ===== 模态框 ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 14px;
+            padding: 1.5rem;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal h2 {
+            text-align: center;
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+        }
+        .modal .form-group {
+            margin-bottom: 0.6rem;
+        }
+        .modal .form-group label {
+            display: block;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            margin-bottom: 0.1rem;
+        }
+        .modal .form-group input,
+        .modal .form-group textarea,
+        .modal .form-group select {
+            width: 100%;
+            padding: 0.4rem 0.6rem;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: #f1f5f9;
+            outline: none;
+            font-size: 0.85rem;
+            font-family: inherit;
+        }
+        .modal .form-group textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            margin-top: 0.8rem;
+        }
+
+        /* ===== 犇犇 ===== */
+        .tweet-item {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.6rem;
+        }
+        .tweet-item .tweet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.2rem;
+        }
+        .tweet-item .tweet-user {
+            font-weight: 600;
+            color: #38bdf8;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .tweet-item .tweet-time {
+            font-size: 0.65rem;
+            color: #64748b;
+        }
+        .tweet-item .tweet-content {
+            margin: 0.2rem 0;
+            font-size: 0.9rem;
+        }
+        .tweet-item .tweet-code {
+            background: #0f172a;
+            padding: 0.4rem;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.75rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            margin: 0.2rem 0;
+        }
+        .tweet-item .tweet-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.2rem;
+        }
+        .tweet-item .tweet-actions button {
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 0.7rem;
+            padding: 0.05rem 0.2rem;
+        }
+        .tweet-item .tweet-actions button:hover {
+            color: #38bdf8;
+        }
+        .tweet-reply {
+            margin-left: 1.5rem;
+            border-left: 2px solid #334155;
+            padding-left: 0.8rem;
+            margin-top: 0.3rem;
+        }
+
+        .gu-display {
+            display: flex;
+            gap: 0.3rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .gu-item {
+            background: #0f172a;
+            padding: 0.1rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+        }
+        .gu-item .gu-label {
+            color: #64748b;
+        }
+        .gu-item .gu-value {
+            font-weight: 700;
+        }
+
+        .admin-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 0.8rem;
+        }
+        .team-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .team-card:hover {
+            border-color: #38bdf8;
+            transform: translateY(-2px);
+        }
+        .team-card h3 {
+            color: #38bdf8;
+            font-size: 1rem;
+        }
+        .team-card p {
+            color: #94a3b8;
+            font-size: 0.8rem;
+        }
+        .team-card .meta {
+            color: #64748b;
+            font-size: 0.65rem;
+        }
+
+        .ticket-item {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.6rem;
+        }
+        .ticket-status-open {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+        .ticket-status-closed {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+        }
+        .ticket-status {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.05rem 0.5rem;
+            border-radius: 8px;
+        }
+
+        .admin-tag {
+            background: #8b5cf6;
+            color: white;
+            padding: 0.05rem 0.4rem;
+            border-radius: 8px;
+            font-size: 0.6rem;
+            font-weight: 700;
+        }
+
+        /* ===== 题目详情 ===== */
+        .problem-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            height: calc(100vh - 200px);
+            min-height: 500px;
+        }
+        .problem-panel {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+        .problem-panel .problem-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .problem-panel .problem-meta {
+            display: flex;
+            gap: 0.8rem;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.8rem;
+        }
+        .problem-panel .problem-content {
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+        .problem-panel .problem-content h3 {
+            color: #38bdf8;
+            margin: 0.8rem 0 0.3rem;
+            font-size: 1rem;
+        }
+        .problem-panel .problem-content pre {
+            background: #0f172a;
+            padding: 0.5rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.8rem;
+        }
+        .sample-io {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            padding: 0.6rem 0.8rem;
+            margin: 0.5rem 0;
+            font-family: monospace;
+            font-size: 0.8rem;
+        }
+        .sample-io .label {
+            color: #38bdf8;
+            font-weight: 600;
+            font-size: 0.7rem;
+        }
+
+        .editor-panel {
+            display: flex;
+            flex-direction: column;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .editor-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.3rem 0.8rem;
+            background: #0f172a;
+            border-bottom: 1px solid #334155;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+        }
+        .editor-toolbar select {
+            background: #1e293b;
+            color: #f1f5f9;
+            border: 1px solid #334155;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            outline: none;
+        }
+        .editor-wrapper {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+        .editor-line-numbers {
+            background: #0f172a;
+            color: #64748b;
+            padding: 0.5rem 0.3rem;
+            font-family: monospace;
+            font-size: 0.75rem;
+            line-height: 1.6;
+            text-align: right;
+            user-select: none;
+            min-width: 30px;
+            border-right: 1px solid #334155;
+            overflow: hidden;
+        }
+        .editor-textarea {
+            flex: 1;
+            background: #0f172a;
+            color: #f1f5f9;
+            border: none;
+            padding: 0.5rem 0.8rem;
+            font-family: monospace;
+            font-size: 0.75rem;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+            tab-size: 4;
+        }
+        .editor-actions {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.4rem 0.8rem;
+            background: #0f172a;
+            border-top: 1px solid #334155;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .cooldown-hint {
+            color: #fbbf24;
+            font-size: 0.7rem;
+            display: none;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .cooldown-hint.active {
+            display: flex;
+        }
+
+        /* ===== 判题结果 ===== */
+        .judge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .judge-block {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: monospace;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            min-height: 60px;
+        }
+        .judge-block:hover {
+            transform: scale(1.05);
+        }
+        .judge-AC {
+            background: #22c55e;
+            color: white;
+        }
+        .judge-WA {
+            background: #ef4444;
+            color: white;
+        }
+        .judge-TLE {
+            background: #1f1f1f;
+            color: white;
+            border-color: #434343;
+        }
+        .judge-RE {
+            background: #8b5cf6;
+            color: white;
+        }
+        .judge-MLE {
+            background: #1f1f1f;
+            color: white;
+            border-color: #434343;
+        }
+        .judge-OLE {
+            background: #1f1f1f;
+            color: white;
+            border-color: #434343;
+        }
+        .judge-CE {
+            background: #f59e0b;
+            color: #1f1f1f;
+        }
+        .judge-PD {
+            background: #64748b;
+            color: white;
+            opacity: 0.6;
+        }
+        .judge-judging {
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            color: white;
+            animation: pulse 1.2s infinite;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(0.97);
+            }
+        }
+        .judge-progress {
+            width: 100%;
+            height: 4px;
+            background: #1e293b;
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 0.3rem 0;
+        }
+        .judge-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            border-radius: 2px;
+            transition: width 0.3s;
+            width: 0%;
+        }
+
+        /* ===== 编辑页面 ===== */
+        .edit-form .form-group {
+            margin-bottom: 0.8rem;
+        }
+        .edit-form .form-group label {
+            display: block;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            margin-bottom: 0.2rem;
+        }
+        .edit-form .form-group input,
+        .edit-form .form-group textarea,
+        .edit-form .form-group select {
+            width: 100%;
+            padding: 0.4rem 0.6rem;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: #f1f5f9;
+            outline: none;
+            font-size: 0.85rem;
+            font-family: inherit;
+        }
+        .edit-form .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+            font-family: monospace;
+        }
+        .edit-form .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+        .edit-form .form-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0.3rem 0.8rem;
+                height: auto;
+                gap: 0.2rem;
+            }
+            .nav-links a {
+                padding: 0.2rem 0.4rem;
+                font-size: 0.7rem;
+            }
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .container {
+                padding: 0.5rem;
+            }
+            .problem-layout {
+                grid-template-columns: 1fr;
+                height: auto;
+                min-height: auto;
+            }
+            .editor-panel {
+                min-height: 300px;
+            }
+            .table {
+                font-size: 0.7rem;
+            }
+            .table th,
+            .table td {
+                padding: 0.3rem 0.4rem;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .modal {
+                padding: 1rem;
+            }
+            .gu-display {
+                font-size: 0.65rem;
+            }
+            .edit-form .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+            .judge-grid {
+                grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            }
+            .judge-block {
+                min-height: 45px;
+                font-size: 0.6rem;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <!-- 导航 -->
+    <!-- ===== 导航栏 ===== -->
     <nav class="navbar">
         <span class="nav-brand" onclick="navigate('home')">Dan_Chao_Fan OJ</span>
         <ul class="nav-links">
             <li><a onclick="navigate('home')" id="nav-home" class="active">首页</a></li>
             <li><a onclick="navigate('problems')" id="nav-problems">题库</a></li>
-            <li><a onclick="navigate('submissions')" id="nav-submissions">提交记录</a></li>
-            <li><a onclick="navigate('about')" id="nav-about">关于</a></li>
+            <li><a onclick="navigate('submissions')" id="nav-submissions">提交</a></li>
+            <li><a onclick="navigate('tweets')" id="nav-tweets">犇犇</a></li>
+            <li><a onclick="navigate('teams')" id="nav-teams">团队</a></li>
+            <li><a onclick="navigate('tickets')" id="nav-tickets">工单</a></li>
+            <li><a onclick="navigate('versions')" id="nav-versions">📜</a></li>
+            <li id="nav-admin-li" style="display:none;"><a onclick="navigate('admin')" id="nav-admin" style="color:#8b5cf6;">管理</a></li>
         </ul>
         <div class="user-section">
-            <span class="version-badge">v1.0.0</span>
-            <span style="color:#94a3b8;font-size:0.9rem;" id="user-status">🧑‍💻 Guest</span>
+            <span class="version-badge">v1.1.0</span>
+            <span id="user-status" style="color:#94a3b8;font-size:0.8rem;">🧑 Guest</span>
+            <span id="gu-display-header"></span>
+            <div id="auth-btns">
+                <button class="btn btn-secondary btn-sm" onclick="showLogin()">登录</button>
+                <button class="btn btn-primary btn-sm" onclick="showRegister()">注册</button>
+            </div>
+            <button class="btn btn-secondary btn-sm" id="logout-btn" style="display:none;" onclick="logout()">退出</button>
         </div>
     </nav>
 
-    <!-- 主容器 -->
     <div class="container" id="app"></div>
 
-    <!-- 底部 -->
     <footer class="footer">
-        <p>Dan_Chao_Fan OJ v1.0.0 | Built with ❤️</p>
+        <p>Dan_Chao_Fan OJ v1.1.0 | 咕值 · 犇犇 · 团队 · 工单 | 真·判题</p>
     </footer>
 
-    <!-- ============================================================ -->
+    <!-- ===== 模态框 ===== -->
+
+    <!-- 登录 -->
+    <div class="modal-overlay" id="login-modal">
+        <div class="modal">
+            <h2 id="auth-title">登录</h2>
+            <div class="form-group"><label>用户名</label><input type="text" id="auth-username" placeholder="用户名" /></div>
+            <div class="form-group"><label>密码</label><input type="password" id="auth-password" placeholder="密码" /></div>
+            <div id="auth-captcha-group" style="display:none;">
+                <div class="form-group">
+                    <label>验证码</label>
+                    <div style="display:flex;gap:0.5rem;align-items:center;">
+                        <span id="auth-captcha-text" style="background:#0f172a;padding:0.2rem 0.8rem;border-radius:6px;font-weight:700;font-family:monospace;font-size:0.9rem;">3+5=?</span>
+                        <input type="text" id="auth-captcha-input" placeholder="答案" style="flex:1;padding:0.3rem 0.6rem;background:#0f172a;border:1px solid #334155;border-radius:6px;color:#f1f5f9;outline:none;font-size:0.85rem;" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal('login-modal')">取消</button>
+                <button class="btn btn-primary" id="auth-submit-btn" onclick="handleAuth()">登录</button>
+            </div>
+            <div style="text-align:center;margin-top:0.3rem;font-size:0.8rem;color:#64748b;">
+                <span id="auth-switch-text">还没有账号？<a onclick="switchAuthMode()" style="color:#38bdf8;cursor:pointer;">注册</a></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 发犇犇 -->
+    <div class="modal-overlay" id="tweet-modal">
+        <div class="modal">
+            <h2>📝 发犇犇</h2>
+            <div class="form-group"><label>内容</label><textarea id="tweet-content" rows="2"></textarea></div>
+            <div class="form-group"><label>代码（可选）</label><textarea id="tweet-code" rows="2"></textarea></div>
+            <div class="form-group"><label>语言</label>
+                <select id="tweet-lang"><option value="">无</option><option value="cpp">C++</option><option value="python">Python</option><option value="java">Java</option></select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal('tweet-modal')">取消</button>
+                <button class="btn btn-primary" onclick="postTweet()">发布</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 回复 -->
+    <div class="modal-overlay" id="reply-modal">
+        <div class="modal">
+            <h2>💬 回复</h2>
+            <div class="form-group"><label>回复内容</label><textarea id="reply-content" rows="2"></textarea></div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal('reply-modal')">取消</button>
+                <button class="btn btn-primary" onclick="submitReply()">回复</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 举报 -->
+    <div class="modal-overlay" id="report-modal">
+        <div class="modal">
+            <h2>🚨 举报</h2>
+            <div class="form-group"><label>举报原因</label><textarea id="report-reason" rows="2"></textarea></div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal('report-modal')">取消</button>
+                <button class="btn btn-danger" onclick="submitReport()">提交举报</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 创建团队 -->
+    <div class="modal-overlay" id="team-modal">
+        <div class="modal">
+            <h2>👥 创建团队</h2>
+            <div class="form-group"><label>团队名称</label><input type="text" id="team-name" /></div>
+            <div class="form-group"><label>简介</label><textarea id="team-desc" rows="2"></textarea></div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal('team-modal')">取消</button>
+                <button class="btn btn-primary" onclick="createTeam()">创建</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 工单 -->
+    <div class="modal-overlay" id="ticket-modal">
+        <div class="modal">
+            <h2>📩 提交工单</h2>
+            <div class="form-group"><label>标题</label><input type="text" id="ticket-title" /></div>
+            <div class="form-group"><label>内容</label><textarea id="ticket-content" rows="3"></textarea></div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal('ticket-modal')">取消</button>
+                <button class="btn btn-primary" onclick="submitTicket()">提交</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 管理员回复工单 -->
+    <div class="modal-overlay" id="admin-ticket-modal">
+        <div class="modal">
+            <h2>📩 回复工单</h2>
+            <div class="form-group"><label>回复内容</label><textarea id="admin-ticket-reply" rows="3"></textarea></div>
+            <div class="form-group"><label>状态</label>
+                <select id="admin-ticket-status"><option value="closed">关闭</option><option value="open">保持开启</option></select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal('admin-ticket-modal')">取消</button>
+                <button class="btn btn-primary" onclick="replyTicket()">提交回复</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 判题结果 -->
+    <div class="modal-overlay" id="judge-modal">
+        <div class="modal" style="max-width:600px;">
+            <h2 id="judge-title">⏳ 评测中...</h2>
+            <div class="judge-progress"><div class="judge-progress-fill" id="judge-progress"></div></div>
+            <p id="judge-info" style="color:#94a3b8;font-size:0.8rem;text-align:center;">正在编译...</p>
+            <div class="judge-grid" id="judge-grid"></div>
+            <div class="modal-actions" style="justify-content:center;">
+                <button class="btn btn-primary" id="judge-close-btn" style="display:none;" onclick="closeModal('judge-modal')">关闭</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ================================================================
         //  配置
         // ================================================================
-        const API_BASE = '/api';
+        const API = '/api';
+        let currentUser = null;
+        let currentPage = 'home';
+        let authMode = 'login';
+        let replyTargetId = null;
+        let reportTargetId = null;
+        let currentTicketId = null;
+        let currentProblemCode = null;
 
-        function apiCall(endpoint, options = {}) {
-            return fetch(API_BASE + endpoint, {
-                ...options,
-                headers: { 'Content-Type': 'application/json', ...options.headers }
+        function apiCall(endpoint, opts = {}) {
+            const token = localStorage.getItem('dcf_token');
+            return fetch(API + endpoint, {
+                ...opts,
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': 'Bearer ' + token } : {}),
+                    ...opts.headers
+                }
             }).then(r => r.json()).catch(() => ({ error: '网络错误' }));
         }
 
-        // ================================================================
-        //  页面路由
-        // ================================================================
-        const pages = {
-            home: '首页',
-            problems: '题库',
-            submissions: '提交记录',
-            about: '关于'
-        };
-        let currentPage = 'home';
+        function showToast(msg, type = 'info') {
+            let el = document.getElementById('toast');
+            if (!el) {
+                el = document.createElement('div');
+                el.id = 'toast';
+                el.style.cssText =
+                    'position:fixed;bottom:1.5rem;right:1.5rem;background:#1e293b;border:1px solid #334155;padding:0.6rem 1.2rem;border-radius:10px;z-index:9999;max-width:350px;transition:all 0.3s;transform:translateY(80px);opacity:0;font-size:0.9rem;';
+                document.body.appendChild(el);
+            }
+            el.textContent = msg;
+            el.style.color = type === 'error' ? '#ef4444' : type === 'success' ? '#4ade80' : '#f1f5f9';
+            el.style.transform = 'translateY(0)';
+            el.style.opacity = '1';
+            clearTimeout(el._timer);
+            el._timer = setTimeout(() => { el.style.transform = 'translateY(80px)';
+                el.style.opacity = '0'; }, 3000);
+        }
 
-        function navigate(page) {
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        // ================================================================
+        //  认证
+        // ================================================================
+        function showLogin() { authMode = 'login';
+            document.getElementById('auth-title').textContent = '登录';
+            document.getElementById('auth-submit-btn').textContent = '登录';
+            document.getElementById('auth-switch-text').innerHTML =
+                '还没有账号？<a onclick="switchAuthMode()" style="color:#38bdf8;cursor:pointer;">注册</a>';
+            document.getElementById('auth-username').value = '';
+            document.getElementById('auth-password').value = '';
+            document.getElementById('auth-captcha-group').style.display = 'none';
+            document.getElementById('login-modal').classList.add('active');
+            generateCaptcha(); }
+
+        function showRegister() { authMode = 'register';
+            document.getElementById('auth-title').textContent = '注册';
+            document.getElementById('auth-submit-btn').textContent = '注册';
+            document.getElementById('auth-switch-text').innerHTML =
+                '已有账号？<a onclick="switchAuthMode()" style="color:#38bdf8;cursor:pointer;">去登录</a>';
+            document.getElementById('auth-username').value = '';
+            document.getElementById('auth-password').value = '';
+            document.getElementById('auth-captcha-group').style.display = 'none';
+            document.getElementById('login-modal').classList.add('active');
+            generateCaptcha(); }
+
+        function switchAuthMode() { if (authMode === 'login') showRegister();
+            else showLogin(); }
+
+        function generateCaptcha() {
+            const a = Math.floor(Math.random() * 20) + 1,
+                b = Math.floor(Math.random() * 20) + 1;
+            document.getElementById('auth-captcha-text').textContent = a + ' + ' + b + ' = ?';
+            document.getElementById('auth-captcha-text').dataset.answer = String(a + b);
+        }
+
+        async function handleAuth() {
+            const username = document.getElementById('auth-username').value.trim();
+            const password = document.getElementById('auth-password').value.trim();
+            if (!username || !password) { showToast('请填写完整信息', 'error'); return; }
+
+            const captchaGroup = document.getElementById('auth-captcha-group');
+            if (captchaGroup.style.display !== 'none') {
+                const input = document.getElementById('auth-captcha-input').value.trim();
+                const answer = document.getElementById('auth-captcha-text').dataset.answer;
+                if (input !== answer) { showToast('验证码错误', 'error');
+                    generateCaptcha(); return; }
+            }
+
+            const res = await apiCall('/auth/' + authMode, { method: 'POST', body: JSON.stringify({ username,
+                    password }) });
+            if (res.error) { showToast(res.error, 'error'); if (authMode === 'login') { document.getElementById(
+                        'auth-captcha-group').style.display = 'block';
+                    generateCaptcha(); } return; }
+            if (res.token) {
+                localStorage.setItem('dcf_token', res.token);
+                localStorage.setItem('dcf_user', JSON.stringify(res.user));
+                currentUser = res.user;
+                document.getElementById('login-modal').classList.remove('active');
+                updateUI();
+                showToast(authMode === 'login' ? '登录成功！' : '注册成功！', 'success');
+                navigate('home');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('dcf_token');
+            localStorage.removeItem('dcf_user');
+            currentUser = null;
+            updateUI();
+            showToast('已退出', 'warning');
+            navigate('home');
+        }
+
+        function updateUI() {
+            const token = localStorage.getItem('dcf_token');
+            const userStr = localStorage.getItem('dcf_user');
+            if (token && userStr) {
+                try {
+                    currentUser = JSON.parse(userStr);
+                    document.getElementById('user-status').innerHTML = '👤 ' + currentUser.username;
+                    document.getElementById('auth-btns').style.display = 'none';
+                    document.getElementById('logout-btn').style.display = 'inline-block';
+                    const gu = currentUser.gu || { total: 0, color: 'gray' };
+                    const colorMap = { gray: 'gu-gray', blue: 'gu-blue', green: 'gu-green', orange: 'gu-orange',
+                        red: 'gu-red', purple: 'gu-purple' };
+                    document.getElementById('gu-display-header').innerHTML =
+                        `<span class="gu-badge ${colorMap[gu.color]||'gu-gray'}">${Math.floor(gu.total)}</span>`;
+                    if (currentUser.role === 'admin') document.getElementById('nav-admin-li').style.display =
+                        'inline-block';
+                    else document.getElementById('nav-admin-li').style.display = 'none';
+                } catch { resetUI(); }
+            } else { resetUI(); }
+        }
+
+        function resetUI() {
+            currentUser = null;
+            document.getElementById('user-status').innerHTML = '🧑 Guest';
+            document.getElementById('auth-btns').style.display = 'flex';
+            document.getElementById('logout-btn').style.display = 'none';
+            document.getElementById('gu-display-header').innerHTML = '';
+            document.getElementById('nav-admin-li').style.display = 'none';
+        }
+
+        // ================================================================
+        //  路由
+        // ================================================================
+        function navigate(page, param) {
             currentPage = page;
-            location.hash = page;
-            renderPage(page);
+            if (page === 'problem' && param) {
+                // 检测是否是编辑页面
+                if (param.endsWith('/edit')) {
+                    const code = param.replace('/edit', '');
+                    location.hash = 'problem/' + param;
+                    renderProblemEdit(code);
+                    return;
+                }
+                location.hash = 'problem/' + param;
+                renderProblemDetail(param);
+                return;
+            }
+            if (param) location.hash = page + '/' + param;
+            else location.hash = page;
+            renderPage(page, param);
             document.querySelectorAll('.nav-links a').forEach(el => {
                 el.classList.toggle('active', el.id === 'nav-' + page);
             });
@@ -425,34 +1313,54 @@
 
         function getRoute() {
             const hash = location.hash.slice(1) || 'home';
-            return hash in pages ? hash : 'home';
+            const parts = hash.split('/');
+            return { page: parts[0], param: parts[1] || null };
         }
 
-        // ================================================================
-        //  渲染页面
-        // ================================================================
-
-        function renderPage(page) {
+        async function renderPage(page, param) {
             const app = document.getElementById('app');
             switch (page) {
                 case 'home':
-                    renderHome(app);
+                    await renderHome(app);
                     break;
                 case 'problems':
-                    renderProblems(app);
+                    await renderProblems(app);
+                    break;
+                case 'problem':
+                    // 在 navigate 里已经处理了，这里不再重复
                     break;
                 case 'submissions':
-                    renderSubmissions(app);
+                    await renderSubmissions(app);
                     break;
-                case 'about':
-                    renderAbout(app);
+                case 'tweets':
+                    await renderTweets(app);
+                    break;
+                case 'user':
+                    await renderUserProfile(app, param);
+                    break;
+                case 'teams':
+                    await renderTeams(app);
+                    break;
+                case 'team':
+                    await renderTeamDetail(app, param);
+                    break;
+                case 'tickets':
+                    await renderTickets(app);
+                    break;
+                case 'versions':
+                    await renderVersions(app);
+                    break;
+                case 'admin':
+                    await renderAdmin(app);
                     break;
                 default:
-                    renderHome(app);
+                    await renderHome(app);
             }
         }
 
-        // ----- 首页 -----
+        // ================================================================
+        //  首页
+        // ================================================================
         async function renderHome(container) {
             const problems = await apiCall('/problems');
             const subs = await apiCall('/submissions');
@@ -462,12 +1370,12 @@
                 <div class="page active">
                     <div class="hero">
                         <h1>⚡ Dan_Chao_Fan OJ</h1>
-                        <p>自主判题 · 实时评测 · 真·编译执行</p>
+                        <p>真判题 · 咕值 · 犇犇 · 团队 · 工单</p>
                         <button class="btn btn-primary" onclick="navigate('problems')">🚀 开始做题</button>
                     </div>
                     <div class="notice">
-                        <div class="notice-title">📢 系统公告</div>
-                        <p style="color:#94a3b8;">DCF OJ 已支持 C++ / Python / Java 真判题，数据存储在 Backblaze B2。</p>
+                        <div class="notice-title">📢 v1.1.0 大更新</div>
+                        <p style="color:#94a3b8;font-size:0.9rem;">犇犇、用户主页、团队系统、咕值系统、工单系统、管理员面板</p>
                     </div>
                     <div class="stats-grid">
                         <div class="stat-card"><span class="stat-number">${problems.length}</span><div class="stat-label">题目</div></div>
@@ -478,22 +1386,18 @@
             `;
         }
 
-        // ----- 题库 -----
+        // ================================================================
+        //  题库
+        // ================================================================
         async function renderProblems(container) {
             const problems = await apiCall('/problems');
             const subs = await apiCall('/submissions');
 
-            const typeMap = {
-                problem: { label: '题库', cls: 'type-problem', idCls: 'id-problem' },
+            const diffMap = { intro: '入门', 'popular-minus': '普及-', popular: '普及', 'popular-plus': '普及+/提高-',
+                advanced: '提高', 'advanced-plus': '提高+/省选-', provincial: '省选/NOI-', noi: 'NOI', 'noi-plus': 'NOI+' };
+            const typeMap = { problem: { label: '题库', cls: 'type-problem', idCls: 'id-problem' },
                 team: { label: '团队', cls: 'type-team', idCls: 'id-team' },
-                user: { label: '用户', cls: 'type-user', idCls: 'id-user' }
-            };
-
-            const diffMap = {
-                easy: '入门',
-                medium: '普及',
-                hard: '提高'
-            };
+                user: { label: '用户', cls: 'type-user', idCls: 'id-user' } };
 
             let rows = problems.map(p => {
                 const tc = typeMap[p.type] || typeMap.problem;
@@ -501,91 +1405,746 @@
                 const ps = subs.filter(s => s.problem_code === p.code);
                 const ac = ps.filter(s => s.status === 'AC').length;
                 const rate = ps.length ? Math.floor(ac / ps.length * 100) : 0;
-
-                return `
-                    <tr>
-                        <td><span class="status-unsolved">○</span></td>
-                        <td class="id-display ${tc.idCls}">${p.code}</td>
-                        <td style="font-weight:500;">${p.title}</td>
-                        <td><span class="type-badge ${tc.cls}">${tc.label}</span></td>
-                        <td><span class="diff diff-${p.difficulty || 'easy'}">${diff}</span></td>
-                        <td>${rate}%</td>
-                        <td>${(p.tags||[]).map(t => `<span class="tag">${t}</span>`).join('')}</td>
-                    </tr>
-                `;
+                return `<tr class="clickable" onclick="navigate('problem','${p.code}')">
+                    <td><span style="color:#64748b;">○</span></td>
+                    <td class="id-display ${tc.idCls}">${p.code}</td>
+                    <td>${p.title}</td>
+                    <td><span class="type-badge ${tc.cls}">${tc.label}</span></td>
+                    <td><span class="diff diff-${p.difficulty}">${diff}</span></td>
+                    <td>${rate}%</td>
+                    <td>${(p.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</td>
+                </tr>`;
             }).join('') || '<tr><td colspan="7" class="empty-state">暂无题目</td></tr>';
 
             container.innerHTML = `
                 <div class="page active">
-                    <h2 style="font-size:1.5rem;margin-bottom:1rem;">📚 题库</h2>
+                    <h2 style="font-size:1.3rem;margin-bottom:0.8rem;">📚 题库</h2>
                     <div class="filters">
-                        <input type="text" id="search-input" placeholder="搜索题目..." />
-                        <select id="type-filter"><option value="all">全部类型</option><option value="problem">题库题</option><option value="team">团队题</option><option value="user">用户独创</option></select>
+                        <input type="text" id="search-input" placeholder="搜索..." oninput="filterProblems()" />
+                        <select id="type-filter" onchange="filterProblems()"><option value="all">全部</option><option value="problem">题库</option><option value="team">团队</option><option value="user">用户</option></select>
                     </div>
-                    <table class="problem-table">
-                        <thead><tr><th>状态</th><th>题号</th><th>名称</th><th>类型</th><th>难度</th><th>通过率</th><th>标签</th></tr></thead>
-                        <tbody>${rows}</tbody>
-                    </table>
+                    <div class="table-wrap">
+                        <table class="table">
+                            <thead><tr><th>状态</th><th>题号</th><th>名称</th><th>类型</th><th>难度</th><th>通过率</th><th>标签</th></tr></thead>
+                            <tbody id="problem-tbody">${rows}</tbody>
+                        </table>
+                    </div>
                 </div>
             `;
         }
 
-        // ----- 提交记录 -----
+        window.filterProblems = function() {
+            const search = document.getElementById('search-input')?.value?.toLowerCase() || '';
+            const type = document.getElementById('type-filter')?.value || 'all';
+            const rows = document.querySelectorAll('#problem-tbody tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const typeMatch = type === 'all' || text.includes(type);
+                const searchMatch = text.includes(search);
+                row.style.display = (typeMatch && searchMatch) ? '' : 'none';
+            });
+        };
+
+        // ================================================================
+        //  题目详情
+        // ================================================================
+        async function renderProblemDetail(code) {
+            if (!code) { navigate('problems'); return; }
+            const problems = await apiCall('/problems');
+            const p = problems.find(x => x.code === code);
+            if (!p) { navigate('problems'); return; }
+            currentProblemCode = code;
+            const app = document.getElementById('app');
+
+            const diffMap = { intro: '入门', 'popular-minus': '普及-', popular: '普及', 'popular-plus': '普及+/提高-',
+                advanced: '提高', 'advanced-plus': '提高+/省选-', provincial: '省选/NOI-', noi: 'NOI', 'noi-plus': 'NOI+' };
+            const typeMap = { problem: { label: '题库', cls: 'type-problem', idCls: 'id-problem' },
+                team: { label: '团队', cls: 'type-team', idCls: 'id-team' },
+                user: { label: '用户', cls: 'type-user', idCls: 'id-user' } };
+            const tc = typeMap[p.type] || typeMap.problem;
+            const diff = diffMap[p.difficulty] || '未知';
+            const isAdmin = currentUser?.role === 'admin';
+
+            app.innerHTML = `
+                <div class="page active">
+                    <button class="btn btn-secondary btn-sm" onclick="navigate('problems')">← 返回题库</button>
+                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-top:0.5rem;">
+                        <div></div>
+                        ${isAdmin ? `<button class="btn btn-secondary btn-sm" onclick="navigate('problem','${code}/edit')">✏️ 编辑</button>` : ''}
+                    </div>
+                    <div class="problem-layout" style="margin-top:0.5rem;">
+                        <div class="problem-panel">
+                            <div class="problem-title">
+                                <span class="id-display ${tc.idCls}">${p.code}</span>
+                                <span>${p.title}</span>
+                            </div>
+                            <div class="problem-meta">
+                                <span>⏱ ${p.timeLimit||1000}ms</span>
+                                <span>💾 ${p.memoryLimit||128}MB</span>
+                                <span><span class="diff diff-${p.difficulty}">${diff}</span></span>
+                                <span><span class="type-badge ${tc.cls}">${tc.label}</span></span>
+                            </div>
+                            <div class="problem-content">${p.description}</div>
+                        </div>
+                        <div class="editor-panel">
+                            <div class="editor-toolbar">
+                                <select id="code-lang" onchange="loadTemplate()">
+                                    <option value="cpp">C++14</option>
+                                    <option value="python">Python3</option>
+                                    <option value="java">Java</option>
+                                </select>
+                                <span style="color:#64748b;font-size:0.7rem;">Tab缩进 · 行号</span>
+                            </div>
+                            <div class="editor-wrapper">
+                                <div class="editor-line-numbers" id="editor-lines">1</div>
+                                <textarea class="editor-textarea" id="code-editor" placeholder="// 在此输入代码..." spellcheck="false"></textarea>
+                            </div>
+                            <div class="editor-actions">
+                                <button class="btn btn-secondary btn-sm" onclick="resetCode()">🔄 重置</button>
+                                <div class="cooldown-hint" id="cooldown-hint"><span style="display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,0.3);border-radius:50%;border-top-color:white;animation:spin 0.8s linear infinite;"></span> <span id="cooldown-sec">10</span>s</div>
+                                <div style="flex:1;"></div>
+                                <button class="btn btn-primary btn-sm" id="submit-btn" onclick="submitCode()">▶ 提交</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // 加载模板
+            const templates = p.templates || {};
+            const lang = document.getElementById('code-lang').value;
+            document.getElementById('code-editor').value = templates[lang] ||
+                '// 请在此编写你的代码\n#include <iostream>\nusing namespace std;\n\nint main() {\n    // TODO\n    return 0;\n}';
+            updateLineNumbers();
+            setupEditor();
+            // 暴露给全局
+            window.currentProblemCode = code;
+        }
+
+        function setupEditor() {
+            const ed = document.getElementById('code-editor');
+            const ln = document.getElementById('editor-lines');
+            if (!ed) return;
+            ed.addEventListener('input', updateLineNumbers);
+            ed.addEventListener('scroll', () => { ln.scrollTop = ed.scrollTop; });
+            ed.addEventListener('keydown', (e) => {
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    const s = ed.selectionStart,
+                        end = ed.selectionEnd;
+                    ed.value = ed.value.substring(0, s) + '    ' + ed.value.substring(end);
+                    ed.selectionStart = ed.selectionEnd = s + 4;
+                    updateLineNumbers();
+                }
+            });
+        }
+
+        function updateLineNumbers() {
+            const ed = document.getElementById('code-editor');
+            const ln = document.getElementById('editor-lines');
+            if (!ed || !ln) return;
+            ln.innerHTML = Array.from({ length: ed.value.split('\n').length }, (_, i) => i + 1).join('<br>');
+        }
+
+        function loadTemplate() {
+            const lang = document.getElementById('code-lang')?.value || 'cpp';
+            const templates = { cpp: '// C++14\n#include <iostream>\nusing namespace std;\n\nint main() {\n    // TODO\n    return 0;\n}',
+                python: '# Python3\n# TODO', java: '// Java\nimport java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        // TODO\n    }\n}' };
+            document.getElementById('code-editor').value = templates[lang] || '';
+            updateLineNumbers();
+        }
+
+        function resetCode() { loadTemplate(); }
+
+        // ================================================================
+        //  题目编辑
+        // ================================================================
+        async function renderProblemEdit(code) {
+            if (!currentUser || currentUser.role !== 'admin') {
+                showToast('需要管理员权限', 'error');
+                navigate('problem', code);
+                return;
+            }
+            const problems = await apiCall('/problems');
+            const p = problems.find(x => x.code === code);
+            if (!p) { navigate('problems'); return; }
+
+            const app = document.getElementById('app');
+            app.innerHTML = `
+                <div class="page active">
+                    <button class="btn btn-secondary btn-sm" onclick="navigate('problem','${code}')">← 返回题目</button>
+                    <div class="card" style="margin-top:0.5rem;">
+                        <h2 style="font-size:1.3rem;">✏️ 编辑题目: ${p.code}</h2>
+                        <div class="edit-form">
+                            <div class="form-group"><label>标题</label><input type="text" id="edit-title" value="${p.title||''}" /></div>
+                            <div class="form-row">
+                                <div class="form-group"><label>难度</label>
+                                    <select id="edit-difficulty">
+                                        ${['unrated','intro','popular-minus','popular','popular-plus','advanced','advanced-plus','provincial','noi','noi-plus'].map(d =>
+                                            `<option value="${d}" ${d===p.difficulty?'selected':''}>${d}</option>`
+                                        ).join('')}
+                                    </select>
+                                </div>
+                                <div class="form-group"><label>类型</label>
+                                    <select id="edit-type">
+                                        ${['problem','team','user'].map(t =>
+                                            `<option value="${t}" ${t===p.type?'selected':''}>${t}</option>`
+                                        ).join('')}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group"><label>时间限制 (ms)</label><input type="number" id="edit-time" value="${p.timeLimit||1000}" /></div>
+                                <div class="form-group"><label>内存限制 (MB)</label><input type="number" id="edit-memory" value="${p.memoryLimit||128}" /></div>
+                            </div>
+                            <div class="form-group"><label>标签 (逗号分隔)</label><input type="text" id="edit-tags" value="${(p.tags||[]).join(', ')}" /></div>
+                            <div class="form-group"><label>描述 (支持HTML)</label><textarea id="edit-description" rows="6">${p.description||''}</textarea></div>
+                            <div class="form-group"><label>测试用例 (JSON)</label><textarea id="edit-testcases" rows="4">${JSON.stringify(p.testCases||[], null, 2)}</textarea></div>
+                            <div class="form-group"><label>数据路径</label><input type="text" id="edit-datapath" value="${p.dataPath||p.code}" /></div>
+                            <div class="form-actions">
+                                <button class="btn btn-secondary" onclick="navigate('problem','${code}')">取消</button>
+                                <button class="btn btn-primary" onclick="saveProblemEdit('${code}')">💾 保存</button>
+                                <button class="btn btn-danger" onclick="deleteProblem('${code}')">🗑️ 删除</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function saveProblemEdit(code) {
+            try {
+                const data = {
+                    title: document.getElementById('edit-title').value.trim(),
+                    difficulty: document.getElementById('edit-difficulty').value,
+                    type: document.getElementById('edit-type').value,
+                    timeLimit: parseInt(document.getElementById('edit-time').value) || 1000,
+                    memoryLimit: parseInt(document.getElementById('edit-memory').value) || 128,
+                    tags: document.getElementById('edit-tags').value.split(',').map(s => s.trim()).filter(Boolean),
+                    description: document.getElementById('edit-description').value,
+                    testCases: JSON.parse(document.getElementById('edit-testcases').value || '[]'),
+                    dataPath: document.getElementById('edit-datapath').value.trim() || code
+                };
+                const res = await apiCall('/problems/' + code, {
+                    method: 'PUT',
+                    body: JSON.stringify(data)
+                });
+                if (res.error) { showToast(res.error, 'error'); return; }
+                showToast('✅ 保存成功！', 'success');
+                navigate('problem', code);
+            } catch (e) {
+                showToast('JSON 格式错误: ' + e.message, 'error');
+            }
+        }
+
+        async function deleteProblem(code) {
+            if (!confirm('确认删除题目 ' + code + '？此操作不可恢复！')) return;
+            const res = await apiCall('/problems/' + code, { method: 'DELETE' });
+            if (res.error) { showToast(res.error, 'error'); return; }
+            showToast('已删除', 'success');
+            navigate('problems');
+        }
+
+        // ================================================================
+        //  提交 & 判题
+        // ================================================================
+        async function submitCode() {
+            if (!currentUser) { showToast('请先登录', 'warning');
+                navigate('home'); return; }
+            const code = document.getElementById('code-editor').value.trim();
+            if (!code || code.length < 3) { showToast('代码太短', 'warning'); return; }
+            const lang = document.getElementById('code-lang').value;
+
+            const res = await apiCall('/submissions', {
+                method: 'POST',
+                body: JSON.stringify({ problemCode: currentProblemCode, code, lang })
+            });
+            if (res.error) { showToast(res.error, 'error'); return; }
+
+            showJudgeResult(res.id);
+        }
+
+        async function showJudgeResult(subId) {
+            const modal = document.getElementById('judge-modal');
+            const grid = document.getElementById('judge-grid');
+            const progress = document.getElementById('judge-progress');
+            const info = document.getElementById('judge-info');
+            const title = document.getElementById('judge-title');
+            const closeBtn = document.getElementById('judge-close-btn');
+
+            modal.classList.add('active');
+            grid.innerHTML =
+                '<div class="judge-block judge-judging" style="grid-column:1/-1;min-height:80px;">⏳ 评测中...</div>';
+            progress.style.width = '0%';
+            closeBtn.style.display = 'none';
+            title.textContent = '⏳ 评测中...';
+
+            let attempts = 0;
+            const interval = setInterval(async () => {
+                attempts++;
+                const subs = await apiCall('/submissions');
+                const sub = subs.find(s => s.id === subId);
+                if (!sub || sub.status === 'PD' || sub.status === 'Judging') {
+                    progress.style.width = Math.min(attempts * 5, 90) + '%';
+                    info.textContent = attempts > 10 ? '评测中... 请稍候' : '编译中...';
+                    return;
+                }
+                clearInterval(interval);
+                progress.style.width = '100%';
+                title.textContent = '✅ 评测完成';
+
+                const statusMap = { AC: 'judge-AC', WA: 'judge-WA', TLE: 'judge-TLE', RE: 'judge-RE',
+                    MLE: 'judge-MLE', OLE: 'judge-OLE', CE: 'judge-CE', UKE: 'judge-WA' };
+                const statusLabels = { AC: '✅ AC', WA: '❌ WA', TLE: '⏰ TLE', RE: '💥 RE', MLE: '💾 MLE',
+                    OLE: '📤 OLE', CE: '🔧 CE', UKE: '❓ UKE' };
+
+                if (sub.results && sub.results.length) {
+                    grid.innerHTML = sub.results.map(r =>
+                        `<div class="judge-block ${statusMap[r.status]||'judge-WA'}">#${r.index}<br>${r.status}</div>`
+                    ).join('');
+                } else {
+                    const cls = statusMap[sub.status] || 'judge-WA';
+                    grid.innerHTML =
+                        `<div class="judge-block ${cls}" style="grid-column:1/-1;min-height:60px;">${statusLabels[sub.status]||sub.status}</div>`;
+                }
+
+                info.textContent =
+                    `总耗时: ${sub.time||0}ms | 内存: ${sub.memory||0}MB | 语言: ${sub.lang||'C++'}`;
+                closeBtn.style.display = 'inline-block';
+                document.getElementById('judge-close-btn').onclick = () => closeModal('judge-modal');
+            }, 600);
+        }
+
+        // ================================================================
+        //  提交记录
+        // ================================================================
         async function renderSubmissions(container) {
             const subs = await apiCall('/submissions');
-            let rows = subs.slice(0, 50).map(s => `
+            let rows = subs.slice(0, 100).map(s => `
                 <tr>
-                    <td style="font-size:0.8rem;font-family:monospace;">${s.id || 'sub_'}</td>
+                    <td style="font-size:0.65rem;font-family:monospace;">${s.id || 'sub_'}</td>
                     <td>${s.username || 'Guest'}</td>
                     <td><span class="id-display">${s.problem_code}</span></td>
-                    <td><span style="font-weight:700;color:${s.status === 'AC' ? '#4ade80' : '#f87171'}">${s.status}</span></td>
+                    <td><span style="font-weight:700;color:${s.status==='AC'?'#4ade80':s.status==='CE'?'#f59e0b':'#f87171'}">${s.status}</span></td>
                     <td>${s.lang}</td>
-                    <td>${s.time || 0}ms</td>
-                    <td style="font-size:0.8rem;color:#64748b;">${s.timestamp ? new Date(s.timestamp).toLocaleString() : '-'}</td>
+                    <td>${s.time||0}ms</td>
+                    <td style="font-size:0.7rem;color:#64748b;">${s.timestamp ? new Date(s.timestamp).toLocaleString() : '-'}</td>
                 </tr>
             `).join('') || '<tr><td colspan="7" class="empty-state">暂无提交</td></tr>';
 
             container.innerHTML = `
                 <div class="page active">
-                    <h2 style="font-size:1.5rem;margin-bottom:1rem;">📋 提交记录</h2>
-                    <table class="problem-table">
-                        <thead><tr><th>ID</th><th>用户</th><th>题目</th><th>状态</th><th>语言</th><th>耗时</th><th>时间</th></tr></thead>
-                        <tbody>${rows}</tbody>
-                    </table>
-                </div>
-            `;
-        }
-
-        // ----- 关于 -----
-        function renderAbout(container) {
-            container.innerHTML = `
-                <div class="page active">
-                    <h2 style="font-size:1.8rem;margin-bottom:1.5rem;">关于 DCF OJ</h2>
-                    <div style="background:#1e293b;border:1px solid #334155;border-radius:16px;padding:2rem;max-width:700px;">
-                        <p><strong>Dan_Chao_Fan OJ</strong> v1.0.0</p>
-                        <p style="color:#94a3b8;margin-top:0.5rem;">支持 C++14 / Python3 / Java 真判题</p>
-                        <p style="color:#94a3b8;">数据存储: Backblaze B2</p>
-                        <p style="color:#94a3b8;margin-top:0.5rem;font-size:0.85rem;">© 2026 Dan_Chao_Fan OJ Team</p>
+                    <h2 style="font-size:1.3rem;margin-bottom:0.8rem;">📋 提交记录</h2>
+                    <div class="table-wrap">
+                        <table class="table">
+                            <thead><tr><th>ID</th><th>用户</th><th>题目</th><th>状态</th><th>语言</th><th>耗时</th><th>时间</th></tr></thead>
+                            <tbody>${rows}</tbody>
+                        </table>
                     </div>
                 </div>
             `;
         }
 
         // ================================================================
+        //  犇犇
+        // ================================================================
+        async function renderTweets(container) {
+            const tweets = await apiCall('/tweets');
+
+            let items = tweets.map(t => `
+                <div class="tweet-item">
+                    <div class="tweet-header">
+                        <span class="tweet-user" onclick="navigate('user','${t.username}')">${t.username}</span>
+                        <span class="tweet-time">${new Date(t.created_at).toLocaleString()}</span>
+                    </div>
+                    ${t.content ? `<div class="tweet-content">${t.content}</div>` : ''}
+                    ${t.code ? `<div class="tweet-code">${t.code}</div>` : ''}
+                    <div class="tweet-actions">
+                        <button onclick="showReply(${t.id})">💬 回复</button>
+                        <button onclick="showReport(${t.id})">🚨 举报</button>
+                    </div>
+                    ${t.replies ? t.replies.map(r => `
+                        <div class="tweet-reply tweet-item">
+                            <div class="tweet-header">
+                                <span class="tweet-user" onclick="navigate('user','${r.username}')">${r.username}</span>
+                                <span class="tweet-time">${new Date(r.created_at).toLocaleString()}</span>
+                            </div>
+                            <div class="tweet-content">${r.content}</div>
+                        </div>
+                    `).join('') : ''}
+                </div>
+            `).join('') || '<div class="empty-state">还没有犇犇，发一条吧！</div>';
+
+            container.innerHTML = `
+                <div class="page active">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;flex-wrap:wrap;gap:0.5rem;">
+                        <h2 style="font-size:1.3rem;">🐮 犇犇</h2>
+                        ${currentUser ? `<button class="btn btn-primary btn-sm" onclick="document.getElementById('tweet-modal').classList.add('active')">✏️ 发犇犇</button>` : '<span style="color:#64748b;font-size:0.8rem;">登录后发布</span>'}
+                    </div>
+                    ${items}
+                </div>
+            `;
+        }
+
+        async function postTweet() {
+            const content = document.getElementById('tweet-content').value.trim();
+            const code = document.getElementById('tweet-code').value.trim();
+            const lang = document.getElementById('tweet-lang').value;
+            if (!content && !code) { showToast('内容不能为空', 'error'); return; }
+            const res = await apiCall('/tweets', { method: 'POST', body: JSON.stringify({ content, code, lang }) });
+            if (res.error) { showToast(res.error, 'error'); return; }
+            showToast('发布成功！', 'success');
+            document.getElementById('tweet-modal').classList.remove('active');
+            document.getElementById('tweet-content').value = '';
+            document.getElementById('tweet-code').value = '';
+            navigate('tweets');
+        }
+
+        function showReply(id) { replyTargetId = id;
+            document.getElementById('reply-content').value = '';
+            document.getElementById('reply-modal').classList.add('active'); }
+
+        async function submitReply() {
+            const content = document.getElementById('reply-content').value.trim();
+            if (!content) { showToast('请输入回复内容', 'error'); return; }
+            const res = await apiCall('/tweets/' + replyTargetId + '/reply', { method: 'POST', body: JSON.stringify({ content }) });
+            if (res.error) { showToast(res.error, 'error'); return; }
+            showToast('回复成功！', 'success');
+            document.getElementById('reply-modal').classList.remove('active');
+            navigate('tweets');
+        }
+
+        function showReport(id) { reportTargetId = id;
+            document.getElementById('report-reason').value = '';
+            document.getElementById('report-modal').classList.add('active'); }
+
+        async function submitReport() {
+            const reason = document.getElementById('report-reason').value.trim();
+            if (!reason) { showToast('请填写举报原因', 'error'); return; }
+            const res = await apiCall('/tweets/' + reportTargetId + '/report', { method: 'POST', body: JSON.stringify({ reason }) });
+            if (res.error) { showToast(res.error, 'error'); return; }
+            showToast('举报成功', 'success');
+            document.getElementById('report-modal').classList.remove('active');
+        }
+
+        // ================================================================
+        //  用户主页
+        // ================================================================
+        async function renderUserProfile(container, username) {
+            if (!username) { navigate('home'); return; }
+            const user = await apiCall('/users/' + username);
+            if (user.error) { container.innerHTML =
+                    `<div class="page active"><div class="empty-state">用户不存在</div></div>`; return; }
+            const teams = await apiCall('/users/' + username + '/teams');
+
+            const colorMap = { gray: 'gu-gray', blue: 'gu-blue', green: 'gu-green', orange: 'gu-orange', red: 'gu-red',
+                purple: 'gu-purple' };
+            const gu = user.gu || { total: 100, color: 'gray', practice: 0, credit: 100 };
+
+            container.innerHTML = `
+                <div class="page active">
+                    <div class="card">
+                        <div style="display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;">
+                            <div style="font-size:2.5rem;">👤</div>
+                            <div>
+                                <h2 style="font-size:1.5rem;">${user.username}</h2>
+                                <div style="display:flex;gap:0.3rem;align-items:center;flex-wrap:wrap;">
+                                    <span class="gu-badge ${colorMap[gu.color]||'gu-gray'}">${Math.floor(gu.total)} 咕</span>
+                                    ${user.role === 'admin' ? '<span class="admin-tag">管理员</span>' : ''}
+                                    ${user.role === 'banned' ? '<span style="color:#ef4444;font-weight:700;font-size:0.8rem;">🚫 封禁</span>' : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">📊 咕值</div>
+                        <div class="gu-display">
+                            <span class="gu-item"><span class="gu-label">练习</span> <span class="gu-value">${gu.practice||0}</span></span>
+                            <span class="gu-item"><span class="gu-label">信用</span> <span class="gu-value">${gu.credit||100}</span></span>
+                            <span class="gu-item"><span class="gu-label">贡献</span> <span class="gu-value">${gu.contribution||0}</span></span>
+                            <span class="gu-item"><span class="gu-label">比赛</span> <span class="gu-value">${gu.competition||0}</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">📝 统计</div>
+                        <div style="display:flex;gap:1rem;flex-wrap:wrap;font-size:0.85rem;">
+                            <span>提交: <strong>${user.totalSubmissions||0}</strong></span>
+                            <span>通过: <strong style="color:#4ade80;">${user.acSubmissions||0}</strong></span>
+                            <span>已解决: <strong>${(user.solved||[]).length}</strong></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">👥 团队</div>
+                        ${teams.length ? teams.map(t=>`<span class="tag" style="cursor:pointer;font-size:0.8rem;padding:0.2rem 0.6rem;" onclick="navigate('team','${t.id}')">${t.name}</span>`).join(' ') : '<span style="color:#64748b;font-size:0.85rem;">未加入团队</span>'}
+                    </div>
+                </div>
+            `;
+        }
+
+        // ================================================================
+        //  团队
+        // ================================================================
+        async function renderTeams(container) {
+            const teams = await apiCall('/teams');
+
+            let cards = teams.map(t => `
+                <div class="team-card" onclick="navigate('team','${t.id}')">
+                    <h3>${t.name}</h3>
+                    <p>${t.description || '无简介'}</p>
+                    <span class="meta">👤 ${t.member_count||0} 人 · ${new Date(t.created_at).toLocaleDateString()}</span>
+                </div>
+            `).join('') || '<div class="empty-state">暂无团队</div>';
+
+            container.innerHTML = `
+                <div class="page active">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;flex-wrap:wrap;gap:0.5rem;">
+                        <h2 style="font-size:1.3rem;">👥 团队</h2>
+                        ${currentUser ? `<button class="btn btn-primary btn-sm" onclick="document.getElementById('team-modal').classList.add('active')">➕ 创建</button>` : ''}
+                    </div>
+                    <div class="team-grid">${cards}</div>
+                </div>
+            `;
+        }
+
+        async function createTeam() {
+            const name = document.getElementById('team-name').value.trim();
+            const description = document.getElementById('team-desc').value.trim();
+            if (!name) { showToast('请输入团队名称', 'error'); return; }
+            const res = await apiCall('/teams', { method: 'POST', body: JSON.stringify({ name, description }) });
+            if (res.error) { showToast(res.error, 'error'); return; }
+            showToast('团队创建成功！', 'success');
+            document.getElementById('team-modal').classList.remove('active');
+            navigate('teams');
+        }
+
+        async function renderTeamDetail(container, id) {
+            const team = await apiCall('/teams/' + id);
+            if (team.error) { container.innerHTML =
+                    `<div class="page active"><div class="empty-state">团队不存在</div></div>`; return; }
+
+            container.innerHTML = `
+                <div class="page active">
+                    <button class="btn btn-secondary btn-sm" onclick="navigate('teams')">← 返回</button>
+                    <div class="card" style="margin-top:0.5rem;">
+                        <h2 style="color:#38bdf8;">${team.name}</h2>
+                        <p style="color:#94a3b8;">${team.description || '无简介'}</p>
+                        <p style="color:#64748b;font-size:0.8rem;">创建者: ${team.owner_id}</p>
+                        ${currentUser && !team.members.find(m=>m.id===currentUser.id) ? `<button class="btn btn-primary btn-sm" onclick="joinTeam(${team.id})">加入团队</button>` : ''}
+                    </div>
+                    <div class="card">
+                        <div class="card-title">👤 成员 (${team.members.length})</div>
+                        ${team.members.map(m => `<span class="tag" style="cursor:pointer;font-size:0.8rem;padding:0.2rem 0.6rem;" onclick="navigate('user','${m.username}')">${m.username} ${m.role==='owner'?'👑':''}</span>`).join(' ')}
+                    </div>
+                </div>
+            `;
+        }
+
+        async function joinTeam(id) {
+            const res = await apiCall('/teams/' + id + '/join', { method: 'POST' });
+            if (res.error) { showToast(res.error, 'error'); return; }
+            showToast('加入成功！', 'success');
+            navigate('team', id);
+        }
+
+        // ================================================================
+        //  工单
+        // ================================================================
+        async function renderTickets(container) {
+            const tickets = await apiCall('/tickets');
+
+            let items = tickets.map(t => `
+                <div class="ticket-item">
+                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.3rem;">
+                        <strong>${t.title}</strong>
+                        <span class="ticket-status ${t.status==='open'?'ticket-status-open':'ticket-status-closed'}">${t.status==='open'?'待处理':'已关闭'}</span>
+                    </div>
+                    <p style="color:#94a3b8;font-size:0.85rem;margin:0.2rem 0;">${t.content}</p>
+                    ${t.admin_reply ? `<div style="background:#0f172a;padding:0.4rem;border-radius:6px;margin-top:0.2rem;border-left:3px solid #38bdf8;font-size:0.85rem;"><strong style="color:#38bdf8;">管理员:</strong> ${t.admin_reply}</div>` : ''}
+                    <div style="font-size:0.65rem;color:#64748b;margin-top:0.2rem;">${new Date(t.created_at).toLocaleString()}</div>
+                    ${currentUser && currentUser.role === 'admin' && t.status === 'open' ? `<button class="btn btn-primary btn-sm" onclick="adminReplyTicket(${t.id})">回复</button>` : ''}
+                </div>
+            `).join('') || '<div class="empty-state">暂无工单</div>';
+
+            container.innerHTML = `
+                <div class="page active">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;flex-wrap:wrap;gap:0.5rem;">
+                        <h2 style="font-size:1.3rem;">📩 工单</h2>
+                        ${currentUser ? `<button class="btn btn-primary btn-sm" onclick="document.getElementById('ticket-modal').classList.add('active')">✏️ 提交</button>` : ''}
+                    </div>
+                    ${items}
+                </div>
+            `;
+        }
+
+        async function submitTicket() {
+            const title = document.getElementById('ticket-title').value.trim();
+            const content = document.getElementById('ticket-content').value.trim();
+            if (!title || !content) { showToast('请填写完整', 'error'); return; }
+            const res = await apiCall('/tickets', { method: 'POST', body: JSON.stringify({ title, content }) });
+            if (res.error) { showToast(res.error, 'error'); return; }
+            showToast('工单提交成功！', 'success');
+            document.getElementById('ticket-modal').classList.remove('active');
+            navigate('tickets');
+        }
+
+        function adminReplyTicket(id) { currentTicketId = id;
+            document.getElementById('admin-ticket-reply').value = '';
+            document.getElementById('admin-ticket-modal').classList.add('active'); }
+
+        async function replyTicket() {
+            const reply = document.getElementById('admin-ticket-reply').value.trim();
+            const status = document.getElementById('admin-ticket-status').value;
+            if (!reply) { showToast('请填写回复内容', 'error'); return; }
+            const res = await apiCall('/tickets/' + currentTicketId, { method: 'PUT', body: JSON.stringify({ admin_reply: reply,
+                    status }) });
+            if (res.error) { showToast(res.error, 'error'); return; }
+            showToast('回复成功！', 'success');
+            document.getElementById('admin-ticket-modal').classList.remove('active');
+            navigate('tickets');
+        }
+
+        // ================================================================
+        //  版本日志
+        // ================================================================
+        async function renderVersions(container) {
+            const versions = await apiCall('/versions');
+
+            let items = versions.map(v => `
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.3rem;">
+                        <h3 style="color:#38bdf8;font-size:1.1rem;">${v.version}</h3>
+                        <span style="color:#64748b;font-size:0.7rem;">${new Date(v.created_at).toLocaleDateString()}</span>
+                    </div>
+                    <h4 style="margin:0.2rem 0;font-size:0.95rem;">${v.title}</h4>
+                    <p style="color:#94a3b8;font-size:0.85rem;">${v.content}</p>
+                </div>
+            `).join('') || '<div class="empty-state">暂无版本记录</div>';
+
+            container.innerHTML = `
+                <div class="page active">
+                    <h2 style="font-size:1.3rem;margin-bottom:0.8rem;">📜 版本日志</h2>
+                    ${items}
+                </div>
+            `;
+        }
+
+        // ================================================================
+        //  管理员
+        // ================================================================
+        async function renderAdmin(container) {
+            if (!currentUser || currentUser.role !== 'admin') {
+                container.innerHTML =
+                    `<div class="page active"><div class="empty-state">🔒 需要管理员权限</div></div>`;
+                return;
+            }
+            const stats = await apiCall('/admin/stats');
+            const users = await apiCall('/admin/users');
+
+            container.innerHTML = `
+                <div class="page active">
+                    <h2 style="font-size:1.3rem;margin-bottom:0.8rem;">🛡️ 管理面板</h2>
+                    <div class="admin-stats-grid">
+                        <div class="stat-card"><span class="stat-number">${stats.users||0}</span><div class="stat-label">用户</div></div>
+                        <div class="stat-card"><span class="stat-number">${stats.problems||0}</span><div class="stat-label">题目</div></div>
+                        <div class="stat-card"><span class="stat-number">${stats.submissions||0}</span><div class="stat-label">提交</div></div>
+                        <div class="stat-card"><span class="stat-number">${stats.openTickets||0}</span><div class="stat-label">工单</div></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">👥 用户</div>
+                        <div class="table-wrap">
+                            <table class="table">
+                                <thead><tr><th>用户名</th><th>角色</th><th>已解决</th><th>操作</th></tr></thead>
+                                <tbody>
+                                    ${users.map(u => `
+                                        <tr>
+                                            <td>${u.username}</td>
+                                            <td>${u.role === 'admin' ? '<span class="admin-tag">管理员</span>' : u.role === 'banned' ? '<span style="color:#ef4444;">封禁</span>' : '用户'}</td>
+                                            <td>${(u.solved||[]).length}</td>
+                                            <td>${u.role !== 'admin' ? `<button class="btn btn-danger btn-sm" onclick="banUser('${u.id}')">封禁</button>` : ''}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function banUser(id) {
+            if (!confirm('确认封禁该用户？')) return;
+            const res = await apiCall('/admin/users/' + id + '/ban', { method: 'PUT' });
+            if (res.error) { showToast(res.error, 'error'); return; }
+            showToast('用户已封禁', 'success');
+            navigate('admin');
+        }
+
+        // ================================================================
         //  启动
         // ================================================================
-
         window.addEventListener('hashchange', () => {
-            renderPage(getRoute());
+            const route = getRoute();
+            if (route.page === 'problem' && route.param) {
+                if (route.param.endsWith('/edit')) {
+                    renderProblemEdit(route.param.replace('/edit', ''));
+                } else {
+                    renderProblemDetail(route.param);
+                }
+                document.querySelectorAll('.nav-links a').forEach(el => {
+                    el.classList.toggle('active', el.id === 'nav-problems');
+                });
+                return;
+            }
+            renderPage(route.page, route.param);
+            document.querySelectorAll('.nav-links a').forEach(el => {
+                el.classList.toggle('active', el.id === 'nav-' + route.page);
+            });
         });
 
         window.addEventListener('load', () => {
+            updateUI();
             const route = getRoute();
-            navigate(route);
+            if (route.page === 'problem' && route.param) {
+                if (route.param.endsWith('/edit')) {
+                    renderProblemEdit(route.param.replace('/edit', ''));
+                } else {
+                    renderProblemDetail(route.param);
+                }
+                document.querySelectorAll('.nav-links a').forEach(el => {
+                    el.classList.toggle('active', el.id === 'nav-problems');
+                });
+                return;
+            }
+            navigate(route.page, route.param);
         });
 
-        // 暴露给 onclick
+        // 暴露
         window.navigate = navigate;
+        window.showLogin = showLogin;
+        window.showRegister = showRegister;
+        window.switchAuthMode = switchAuthMode;
+        window.handleAuth = handleAuth;
+        window.logout = logout;
+        window.postTweet = postTweet;
+        window.showReply = showReply;
+        window.submitReply = submitReply;
+        window.showReport = showReport;
+        window.submitReport = submitReport;
+        window.createTeam = createTeam;
+        window.joinTeam = joinTeam;
+        window.submitTicket = submitTicket;
+        window.adminReplyTicket = adminReplyTicket;
+        window.replyTicket = replyTicket;
+        window.banUser = banUser;
+        window.closeModal = closeModal;
+        window.filterProblems = filterProblems;
+        window.submitCode = submitCode;
+        window.loadTemplate = loadTemplate;
+        window.resetCode = resetCode;
+        window.saveProblemEdit = saveProblemEdit;
+        window.deleteProblem = deleteProblem;
+        window.renderProblemDetail = renderProblemDetail;
+        window.renderProblemEdit = renderProblemEdit;
     </script>
 </body>
 </html>
